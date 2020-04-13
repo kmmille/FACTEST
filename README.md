@@ -41,7 +41,7 @@ This will run all the scenarios. The results for all the scenarios will be saved
 
 To run these scenarios, navigate to the FACTEST folder and run the FACTEST python file using the following command:
 
-```python3 FACTEST.py [modelname] [envname] --segs [int] --plot [bool]```
+```python3 factest.py [modelname] [envname] --segs [int] --plot [bool]```
 
 
 ### `modelname`
