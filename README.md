@@ -4,15 +4,15 @@
 FACTEST is run using Python3. The following libraries are used in FACTEST:
 1. Yices - installation instructions can be found [here](https://github.com/SRI-CSL/yices2_python_bindings)
 2. TuLiP Polytope
-```pip3 install polytope```
+`pip3 install polytope`
 3. Pypoman
-```pip3 install pypoman```
+`pip3 install pypoman`
 4. NumPy
-```pip3 install numpy```
+`pip3 install numpy`
 5. SciPy
-```pip3 install scipy```
+`pip3 install scipy`
 6. Matplotlib
-```pip3 install matplotlib```
+`pip3 install matplotlib`
 
 ## Using the repository
 
@@ -20,11 +20,13 @@ This articact can be run by either downloading the zip folder for this repositor
 
 ## Using the VM
 
-The VM can be downloaded from here (LINK TO BE ADDED). The username for the VM is `FACTEST` and the password for the VM is `factest2020`.
+The VM can be downloaded from <https://uofi.box.com/v/FACTESTVM>. The instructions for using the VM can be found at <https://uofi.box.com/v/FACTESTInstructions>. The username for the VM is `FACTEST` and the password for the VM is `factest2020`.
 
 Once the VM is downloaded, open the terminal and use the following command:
 
-```cd Desktop\FACTEST```
+```
+cd Desktop\FACTEST
+```
 
 ## Running FACTEST
 
@@ -33,7 +35,9 @@ Once the VM is downloaded, open the terminal and use the following command:
 In table 1, there is a list of scenarios that FACTEST is tested on.
 If you would like to run all the FACTEST scenarios, then run the following command:
 
-```python3 factest_all.py --plot [bool]```
+```
+python3 factest_all.py --plot [bool]
+```
 
 This will run all the scenarios. The results for all the scenarios will be saved to a file called `results/synthesis-results/all_data.csv`. If `--plot True` is used, then each of the figures will be saved to a figure called `results/figures/modelname_envname.png`. Note that plotting may take a few minutes. The default value of `--plot` is False.
 
@@ -41,7 +45,9 @@ This will run all the scenarios. The results for all the scenarios will be saved
 
 To run these scenarios, navigate to the FACTEST folder and run the FACTEST python file using the following command:
 
-```python3 factest.py [modelname] [envname] --segs [int] --plot [bool]```
+```
+python3 factest.py [modelname] [envname] --segs [int] --plot [bool]
+```
 
 
 ### `modelname`
@@ -60,7 +66,9 @@ The results of the scenario will be saved to a file called `results/synthesis-re
 
 For example, if you want to save the results of the car model in the maze environment, with 10 maximum line segments and no plot, the following command would be run:
 
-```python factest.py car maze --segs 10 --plot False```
+```
+python factest.py car maze --segs 10 --plot False
+```
 
 The results from this scenario will be saved in a file called `car_maze.csv`.
 
@@ -68,7 +76,9 @@ The results from this scenario will be saved in a file called `car_maze.csv`.
 
 The results from figure 5 can can also be replicated. In order to do this, run the following command:
 
-```python3 path_comparison.py --env [envname] --plot [bool]```
+```
+python3 path_comparison.py --env [envname] --plot [bool]
+```
 
 ### `--env envname`
 The environments in the 2D workspace are `zigzag1`, `zigzag2`, `zigzag3`, `barrier`, `maze`, and `SCOTS`. The environments in the 3D worspace are `ztunnel` and `ltunnel`.
@@ -104,9 +114,9 @@ The results reported are shown below:
 |hovercraft |ztunnel |0.866           |6          |0.472 |1           |
 |hovercraft |ltunnel |0.866           |8          |0.140 |1           |
 
-The results from the RRT vs. SAT-Plan are shown below:
-![](rrtvalg2_time.png)
-![](rrtvalg2_iters.png)
+The results from the RRT vs. SAT-Plan are shown below:  
+<img src = "rrtvalg2_time.png" width = "500">
+<img src = "rrtvalg2_iters.png" width = "500">
 
 Up to now you can replicate all results reported in the paper.
 
@@ -128,9 +138,9 @@ from math import *
 
 def problem():
 	A_rect = np.array([[-1,0],
-					   [1,0],
-					   [0,-1],
-					   [0,1]])
+			   [1,0],
+			   [0,-1],
+			   [0,1]])
   # Since all the obstacles are rectangles,
   # the A-matrix is the same for each polytope
 
@@ -142,11 +152,11 @@ def problem():
 	b6 = np.array([[.1], [0], [0], [4.0]])
 
 	obstacles = [(A_rect, b1),
-				 (A_rect, b2),
-				 (A_rect, b3),
-				 (A_rect, b4),
-				 (A_rect, b5),
-				 (A_rect, b6)]
+		     (A_rect, b2),
+		     (A_rect, b3),
+		     (A_rect, b4),
+		     (A_rect, b5),
+		     (A_rect, b6)]
 
 	b0 = np.array([[-0.5], [1.5], [-1.5], [2.5]])
 	Theta = (A_rect, b0)
@@ -159,8 +169,8 @@ def problem():
 	return obstacles, Theta, goal
 ```
 
-This will generate an environment as the following, where obstacles are red regions and regions outside the borders, initial set is the blue region, and the goal set is the green region:
-![](barrier-scenario.png)
+This will generate an environment as the following, where obstacles are red regions and regions outside the borders, initial set is the blue region, and the goal set is the green region:  
+<img src = "barrier-scenario.png" width = "500">
 
 2. `plot_problem()` (3D Workspace only): This is only required for plotting scenarios in the 3D workspace since it is difficult to see the scenarios with many obstacle polytopes. This function will plot the safe space (complementary of the obstacles) that the system must travel through. Examples can be seen in `Ltunnel.py` and `ztunnel.py` in the `envs` folder. Note that you do not need this function if you do not need to plot the 3D Workspace scenarios.
 
@@ -177,11 +187,11 @@ def plot_problem():
 	obstacles, Theta, Goal = problem()
 
 	A_cube = np.array([[-1, 0, 0],
-					   [1, 0, 0],
-					   [0, -1, 0],
-					   [0, 1, 0],
-					   [0, 0, -1],
-					   [0, 0, 1]])
+		           [1, 0, 0],
+		           [0, -1, 0],
+		           [0, 1, 0],
+		           [0, 0, -1],
+		           [0, 0, 1]])
 
 	b1 = np.array([[0], [15], [0], [5], [0], [5]])
 	b2 = np.array([[-10], [15], [0], [5], [-5], [20]])
@@ -214,8 +224,8 @@ def plot_problem():
 	return axes
 ```
 
-This will generate an environment as the following, where the safe space (complimentary of the obstacles) is the yellow cubes, initial set is the blue cube, and the goal set is the green cube:
-![](ltunnel_scenario.png)
+This will generate an environment as the following, where the safe space (complimentary of the obstacles) is the yellow cubes, initial set is the blue cube, and the goal set is the green cube:  
+<img src = "ltunnel_scenario.png" width = "500">
 
 3. Once the above function(s) is created, they can be imported to FACTEST.py (added in the `Import the environment` part) to run. The following shows how to add the barrier example, which is stored in the `env` folder as `partition2.py` to the main algorithm:
 ```

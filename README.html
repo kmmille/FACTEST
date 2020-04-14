@@ -104,21 +104,24 @@
 <p>This articact can be run by either downloading the zip folder for this repository or by downloading the VM. If you choose to run the artifact by downloading the zip file, be sure that all the requirements are installed. Everything is run from the root folder.</p>
 <h2>
 <a id="user-content-using-the-vm" class="anchor" href="#using-the-vm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using the VM</h2>
-<p>The VM can be downloaded from here (LINK TO BE ADDED). The username for the VM is <code>FACTEST</code> and the password for the VM is <code>factest2020</code>.</p>
+<p>The VM can be downloaded from <a href="https://uofi.box.com/v/FACTESTVM" rel="nofollow">https://uofi.box.com/v/FACTESTVM</a>. The instructions for using the VM can be found at <a href="https://uofi.box.com/v/FACTESTInstructions" rel="nofollow">https://uofi.box.com/v/FACTESTInstructions</a>. The username for the VM is <code>FACTEST</code> and the password for the VM is <code>factest2020</code>.</p>
 <p>Once the VM is downloaded, open the terminal and use the following command:</p>
-<p><code>cd Desktop\FACTEST</code></p>
+<pre><code>cd Desktop\FACTEST
+</code></pre>
 <h2>
 <a id="user-content-running-factest" class="anchor" href="#running-factest" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running FACTEST</h2>
 <h3>
 <a id="user-content-running-all-factest-scenarios" class="anchor" href="#running-all-factest-scenarios" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running all FACTEST Scenarios</h3>
 <p>In table 1, there is a list of scenarios that FACTEST is tested on.
 If you would like to run all the FACTEST scenarios, then run the following command:</p>
-<p><code>python3 factest_all.py --plot [bool]</code></p>
+<pre><code>python3 factest_all.py --plot [bool]
+</code></pre>
 <p>This will run all the scenarios. The results for all the scenarios will be saved to a file called <code>results/synthesis-results/all_data.csv</code>. If <code>--plot True</code> is used, then each of the figures will be saved to a figure called <code>results/figures/modelname_envname.png</code>. Note that plotting may take a few minutes. The default value of <code>--plot</code> is False.</p>
 <h3>
 <a id="user-content-running-specific-scenarios" class="anchor" href="#running-specific-scenarios" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running Specific Scenarios</h3>
 <p>To run these scenarios, navigate to the FACTEST folder and run the FACTEST python file using the following command:</p>
-<p><code>python3 factest.py [modelname] [envname] --segs [int] --plot [bool]</code></p>
+<pre><code>python3 factest.py [modelname] [envname] --segs [int] --plot [bool]
+</code></pre>
 <h3>
 <a id="user-content-modelname" class="anchor" href="#modelname" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>modelname</code>
 </h3>
@@ -137,12 +140,14 @@ If you would like to run all the FACTEST scenarios, then run the following comma
 <p>This specifies whether or not the scenario will be plotted. If <code>True</code>, then a plot showing the scenario, reference trajectory, and actual trajectory will be shown.</p>
 <p>The results of the scenario will be saved to a file called <code>results/synthesis-results/modelname_envname.csv</code>. If you choose to plot the scenario, then it will be saved to a figure called <code>results/figures/modelname_envname.png</code>.</p>
 <p>For example, if you want to save the results of the car model in the maze environment, with 10 maximum line segments and no plot, the following command would be run:</p>
-<p><code>python factest.py car maze --segs 10 --plot False</code></p>
+<pre><code>python factest.py car maze --segs 10 --plot False
+</code></pre>
 <p>The results from this scenario will be saved in a file called <code>car_maze.csv</code>.</p>
 <h2>
 <a id="user-content-rrt-vs-sat-plan-comparison" class="anchor" href="#rrt-vs-sat-plan-comparison" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>RRT vs. SAT-Plan Comparison</h2>
 <p>The results from figure 5 can can also be replicated. In order to do this, run the following command:</p>
-<p><code>python3 path_comparison.py --env [envname] --plot [bool]</code></p>
+<pre><code>python3 path_comparison.py --env [envname] --plot [bool]
+</code></pre>
 <h3>
 <a id="user-content---env-envname" class="anchor" href="#--env-envname" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>--env envname</code>
 </h3>
@@ -299,9 +304,9 @@ If you would like to run all the FACTEST scenarios, then run the following comma
 </tr>
 </tbody>
 </table>
-<p>The results from the RRT vs. SAT-Plan are shown below:
-<a href="rrtvalg2_time.png" target="_blank" rel="noopener noreferrer"><img src="rrtvalg2_time.png" alt="" style="max-width:100%;"></a>
-<a href="rrtvalg2_iters.png" target="_blank" rel="noopener noreferrer"><img src="rrtvalg2_iters.png" alt="" style="max-width:100%;"></a></p>
+<p>The results from the RRT vs. SAT-Plan are shown below:<br>
+<a href="rrtvalg2_time.png" target="_blank" rel="noopener noreferrer"><img src="rrtvalg2_time.png" width="500" style="max-width:100%;"></a>
+<a href="rrtvalg2_iters.png" target="_blank" rel="noopener noreferrer"><img src="rrtvalg2_iters.png" width="500" style="max-width:100%;"></a></p>
 <p>Up to now you can replicate all results reported in the paper.</p>
 <h2>
 <a id="user-content-creating-your-own-scenarios" class="anchor" href="#creating-your-own-scenarios" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating your own scenarios</h2>
@@ -319,9 +324,9 @@ from math import *
 
 def problem():
 	A_rect = np.array([[-1,0],
-					   [1,0],
-					   [0,-1],
-					   [0,1]])
+			   [1,0],
+			   [0,-1],
+			   [0,1]])
   # Since all the obstacles are rectangles,
   # the A-matrix is the same for each polytope
 
@@ -333,11 +338,11 @@ def problem():
 	b6 = np.array([[.1], [0], [0], [4.0]])
 
 	obstacles = [(A_rect, b1),
-				 (A_rect, b2),
-				 (A_rect, b3),
-				 (A_rect, b4),
-				 (A_rect, b5),
-				 (A_rect, b6)]
+		     (A_rect, b2),
+		     (A_rect, b3),
+		     (A_rect, b4),
+		     (A_rect, b5),
+		     (A_rect, b6)]
 
 	b0 = np.array([[-0.5], [1.5], [-1.5], [2.5]])
 	Theta = (A_rect, b0)
@@ -349,8 +354,8 @@ def problem():
 
 	return obstacles, Theta, goal
 </code></pre>
-<p>This will generate an environment as the following, where obstacles are red regions and regions outside the borders, initial set is the blue region, and the goal set is the green region:
-<a href="barrier-scenario.png" target="_blank" rel="noopener noreferrer"><img src="barrier-scenario.png" alt="" style="max-width:100%;"></a></p>
+<p>This will generate an environment as the following, where obstacles are red regions and regions outside the borders, initial set is the blue region, and the goal set is the green region:<br>
+<a href="barrier-scenario.png" target="_blank" rel="noopener noreferrer"><img src="barrier-scenario.png" width="500" style="max-width:100%;"></a></p>
 <ol start="2">
 <li>
 <code>plot_problem()</code> (3D Workspace only): This is only required for plotting scenarios in the 3D workspace since it is difficult to see the scenarios with many obstacle polytopes. This function will plot the safe space (complementary of the obstacles) that the system must travel through. Examples can be seen in <code>Ltunnel.py</code> and <code>ztunnel.py</code> in the <code>envs</code> folder. Note that you do not need this function if you do not need to plot the 3D Workspace scenarios.</li>
@@ -367,11 +372,11 @@ def plot_problem():
 	obstacles, Theta, Goal = problem()
 
 	A_cube = np.array([[-1, 0, 0],
-					   [1, 0, 0],
-					   [0, -1, 0],
-					   [0, 1, 0],
-					   [0, 0, -1],
-					   [0, 0, 1]])
+		           [1, 0, 0],
+		           [0, -1, 0],
+		           [0, 1, 0],
+		           [0, 0, -1],
+		           [0, 0, 1]])
 
 	b1 = np.array([[0], [15], [0], [5], [0], [5]])
 	b2 = np.array([[-10], [15], [0], [5], [-5], [20]])
@@ -403,8 +408,8 @@ def plot_problem():
 
 	return axes
 </code></pre>
-<p>This will generate an environment as the following, where the safe space (complimentary of the obstacles) is the yellow cubes, initial set is the blue cube, and the goal set is the green cube:
-<a href="ltunnel_scenario.png" target="_blank" rel="noopener noreferrer"><img src="ltunnel_scenario.png" alt="" style="max-width:100%;"></a></p>
+<p>This will generate an environment as the following, where the safe space (complimentary of the obstacles) is the yellow cubes, initial set is the blue cube, and the goal set is the green cube:<br>
+<a href="ltunnel_scenario.png" target="_blank" rel="noopener noreferrer"><img src="ltunnel_scenario.png" width="500" style="max-width:100%;"></a></p>
 <ol start="3">
 <li>Once the above function(s) is created, they can be imported to FACTEST.py (added in the <code>Import the environment</code> part) to run. The following shows how to add the barrier example, which is stored in the <code>env</code> folder as <code>partition2.py</code> to the main algorithm:</li>
 </ol>
