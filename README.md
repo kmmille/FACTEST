@@ -20,7 +20,7 @@ This articact can be run by either downloading the zip folder for this repositor
 
 ## Using the VM
 
-The VM can be downloaded from <https://uofi.box.com/v/FACTESTVM>. The instructions for using the VM can be found at <https://uofi.box.com/v/FACTESTInstructions>. The username for the VM is `FACTEST` and the password for the VM is `factest2020`.
+The VM can be downloaded from <https://uofi.box.com/v/FACTESTDownload>. The instructions for using the VM can be found at <https://uofi.box.com/v/FACTESTInstructions>. The username for the VM is `FACTEST` and the password for the VM is `factest2020`.
 
 Once the VM is downloaded, open the terminal and use the following command:
 
