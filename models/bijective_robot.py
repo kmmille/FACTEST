@@ -26,11 +26,11 @@ def model(q, t, u):
 
 	return [xdot, ydot, sdot, cdot]
 
-def controller(q, qref, uref):
+def controller(q, qref, uref, k_plot = [200, 200, 200]):
 	x, y, s, c = q
 	xref, yref, thetaref = qref
 	vref, wref = uref
-	k1, kx, ks = [100, 100, 100]
+	k1, kx, ks = k_plot # For plotting only
 	a = 4
 
 	xe = c*(xref - x) + s*(yref - y)
@@ -50,7 +50,7 @@ def bloating(n, alpha):
 	else:
 		return sqrt(alpha**2)
 
-def run_model(q0, t, qref, uref):
+def run_model(q0, t, qref, uref, k_plot = [200, 200, 200]):
 	q = [q0]
 	u0 = [0, 0]
 	for i in range(0,len(t)):
@@ -58,5 +58,5 @@ def run_model(q0, t, qref, uref):
 		q1 = odeint(model, q0, t_step, args = (u0,))
 		q0 = q1[1]
 		q.append(q0)
-		u0 = controller(q0, qref[i], uref[i])
+		u0 = controller(q0, qref[i], uref[i], k_plot)
 	return q
