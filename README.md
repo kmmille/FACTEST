@@ -1,4 +1,6 @@
-# FACTEST Artifact Evaluation
+# FACTEST Framework
+
+FAst ConTrollEr SynThesis (FACTEST) is a framework for controller synthesis for nonlinear systems in complex environments. You can find links to related publications here[https://kmmille.github.io/FACTEST/]. This repository serves as the accompanying artifact evaluation package for the CAV2020 paper.
 
 ## Requirements
 FACTEST is run using Python3. The following libraries are used in FACTEST:
