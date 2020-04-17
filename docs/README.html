@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FACTEST</title>
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<div class = "header">
+  <h1>
+    <a href="https://kmmille.github.io/FACTEST/">FACTEST</a>
+  </h1>
+  <p style="font-size:20px">
+    <b>FA</b>st <b>C</b>on<b>T</b>roll<b>E</b>r <b>S</b>yn<b>T</b>hesis
+  </p>
+</div>
+
+<div class="topnav">
+  <a href="index.html"><i class="material-icons">home</i></a>
+  <a href="https://github.com/kmmille/FACTEST">GitHub</a>
+  <a href="https://uofi.box.com/v/FACTESTInstructions">VM Instructions</a>
+  <a href="README.html">About</a>
+  <a href="papers.html">Papers</a>
+  <a href="people.html">People</a>
+</div>
+
+<p>
+  FACTEST is a controller synthesis tool for nonlinear systems.
+  Specifically, it solves reach-avoid scenarios for vehicular models.
+  An example can be seen in the image below.
+  The obstacles are shown in red, the initial set is shown in blue, and the goal set is shown in green.
+  The reference trajectory returned by FACTEST is represented by the solid black line.
+  The actual trajectory that the system follows is shown by the dotted purple line.
+</p>
+
+<img src="figs/zigzag_xref.png" alt="Example solution" width="400" class="center">
+<div class="desc">Example solution to a reach-avoid scenario</div>
+
+<p>
+  The inputs to FACTEST are as follows: an environment, a model, and a maximum number of segments.
+  The output is a reference controller.
+  This makes it very simple to create your own scenarios to be solved by FACTEST.
+  The documentation for using FACTEST can be found on the <a href="https://github.com/kmmille/FACTEST">GitHub page</a>.
+</p>
+
+<p>
+  To get a better understanding of how FACTEST works, a brief tutorial will be provided on this page.
+  However, it is highly recommended that you read the papers associated with FACTEST.
+  These papers can be found <a href="papers.html">here</a>.
+</p>
+
+
+<h1>Example</h1>
+
+<h3> Step 1: Define environment </h3>
+<p>
+  Let us consider the reach avoid scenario presented in the figure above.
+  The obstacles, initial set, and goal set are all represented as polytopes.
+  The environment is then defined as the following:
+</p>
+<div class="example">
+  <h4>Obstacles:</h4>
+  \[ \begin{bmatrix} -1 & 1 \\ 1 & 1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} 0.5 \\ 2 \\ 0 \end{bmatrix},
+     \begin{bmatrix} -1 & 1 \\ 1 & 1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} -1 \\ 3.5 \\ 0 \end{bmatrix},
+     \begin{bmatrix} -1 & -1 \\ 1 & -1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} -3 \\ 0 \\ 3 \end{bmatrix},
+     \begin{bmatrix} -1 & -1 \\ 1 & -1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} -1.5 \\ -1.5 \\ 3 \end{bmatrix},
+     \begin{bmatrix} -1 & -1 \\ 1 & -1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} -4.5 \\ 1.5 \\ 3 \end{bmatrix}\]
+
+  <h4>Borders (included in the obstacle list):</h4>
+  \[ \begin{bmatrix} -1 & 0 \\ 1 & 0 \\ 0 & -1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} 1.5 \\ 5 \\ 0.1 \\ 0 \end{bmatrix},
+     \begin{bmatrix} -1 & 0 \\ 1 & 0 \\ 0 & -1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} 1.5 \\ 5 \\ -3 \\ 3.1 \end{bmatrix},
+     \begin{bmatrix} -1 & 0 \\ 1 & 0 \\ 0 & -1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} 1.6 \\ -1.5 \\ 0 \\ 3 \end{bmatrix},
+     \begin{bmatrix} -1 & 0 \\ 1 & 0 \\ 0 & -1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} -5 \\ 5.1 \\ 0 \\ 3 \end{bmatrix}\]
+
+  <h4>Initial set ( \( \Theta \) ):</h4>
+  \[ \begin{bmatrix} -1 & 0 \\ 1 & 0 \\ 0 & -1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} 0.9 \\ -0.6 \\ -0.6 \\ 0.9 \end{bmatrix} \]
+
+  <h4>Goal set:</h4>
+  \[ \begin{bmatrix} -1 & 0 \\ 1 & 0 \\ 0 & -1 \\ 0 & 1 \end{bmatrix} \leq \begin{bmatrix} -4 \\ 4.5 \\ -1 \\ 1.5 \end{bmatrix} \]
+
+</div>
+
+<h3> Step 2: Define model </h3>
+<p>
+  The model used to navigate the reach-avoid scenario is the rearwheel kinematic car model.
+  A tracking controller is needed to track the reference trajectory returned by FACTEST.
+  A Lyapunov-based feedback controller is chosen.
+  The dynamics of the car model and the control law are shown below:
+</p>
+<div class="example">
+  <h4>Dynamics:</h4>
+  \[ \dot{p} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{\theta} \end{bmatrix} =
+     \begin{bmatrix} v \sin(\theta) \\ v \cos(\theta) \\ \omega \end{bmatrix} \]
+
+  <h4>Control law:</h4>
+  \[ \begin{array}{c} v = v_{ref} \cos(e_{\theta}) + k_1 e_{x} \\
+                      \omega = \omega_{ref} + v_{ref} (k_2 e_{y} + k_3 \sin(e_{\theta})) \end{array} \]
+</div>
+
+<h3> Step 3: Compute error bounds </h3>
+<p>
+  The next step is to compute the error bounds of the actual trajectory from the reference trajectory.
+  Since a Lyapunov-based controller was chosen, the error can be bounded using Lyapunov sublevel sets.
+  This is discussed more in depth in <a href="papers/cav2020.pdf">this paper</a>.
+  The error bounds can also be computed using reachability analysis, as proposed in <a href="papers/reachtube.pdf">this paper</a>.
+  For this example, the bounds will be computed using the Lyapunov-based analysis.
+  The size of the error bound is shown below:
+</p>
+<div class="example">
+  <h4>Error bounds:</h4>
+  \[ \ell(n) = \sqrt{\ell_{0}^{2} + \dfrac{4n}{k_2}} \qquad n = 0, 1,\cdots, N-1 \]
+  where \( \ell_0 \) is the size of the initial set, and \( N \) is the maximum number of line segments.
+</div>
+
+
+<h3> Step 4: Compute reference controller </h3>
+<p>
+  Once the error bounds are computed, the reference controller can be found.
+  This is done in 2 steps: finding a reference path, then converting that path to a reference trajectory.
+  Finding the reference path can be done by either solving a SAT problem or a MILP problem.
+  The path \( \xi_{ref}(t) \) is returned as a piecewise linear path.
+  Once the path is found, it is converted to a reference trajectory and the reference controller \( u_{ref}(t) \) is computed.
+  The reference controller is returned as \( [\Theta, t, \xi_{ref}, u_{ref}] \).
+  The returned reference controller is guaranteed safe for any trajectory starting in the initial set.
+  If the reference controller is fed to the system defined in step 2, then an example trajectory is shown below:
+</p>
+<div class="example">
+  <h4>Solution:</h4>
+  <img src="figs/zigzag_sol.png" alt="Example solution" width="400" class="center">
+  <div class="desc">Example solution to the example reach-avoid scenario</div>
+</div>
+
+
+<div class="footer"></div>
+
+</body>
+</html>
