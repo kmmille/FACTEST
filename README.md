@@ -1,8 +1,10 @@
 # FACTEST Framework
 
-FAst ConTrollEr SynThesis (FACTEST) is a framework for *controller synthesis for nonlinear systems in complex environments*. You can find links to related publications [here](https://kmmille.github.io/FACTEST/). This repository serves as the accompanying artifact evaluation package for the CAV2020 paper.
+FAst ConTrollEr SynThesis (FACTEST) is a framework for *controller synthesis for nonlinear systems in complex environments*. You can find links to related publications [here](https://kmmille.github.io/FACTEST/). The controller synthesis problem requires an agent, such as a mobile robot or a quadcopter, to reach a goal (green set) starting from a set of initial configurations (blue), while avoiding obstacles (red). 
 
-The controller synthesis 
+This repository serves as the accompanying artifact evaluation package for the CAV2020 paper.
+
+<img src="robot_barrier.png" width = "500">
 
 ## Requirements
 FACTEST has been tested with Python3 on Ubuntu 16.04 and macOS 10.15 (Catalina).
