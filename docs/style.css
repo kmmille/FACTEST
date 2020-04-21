@@ -117,18 +117,6 @@ table, th, td {
   border: 1px solid black;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 body {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
@@ -143,6 +131,11 @@ p{
 }
 
 h1{
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+h2{
   padding-left: 50px;
   padding-right: 50px;
 }

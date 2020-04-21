@@ -29,19 +29,29 @@
   <a href="people.html">People</a>
 </div>
 
-<div class="abstract">
+<div class="About">
   <h1>Abstract:</h1>
-  We address the problem of synthesizing a controller for nonlinear systems with reach-avoid requirements.
-  Our controller consists of a reference trajectory and a tracking controller which drives the actual trajectory to follow the reference trajectory.
-  We identify a type of reference trajectory such that the tracking error between the actual trajectory of the closed-loop system and the reference trajectory can be bounded.
+  <p>FACTEST is tool for synthesizing controllers for nonlinear systems with reach-avoid requirements.
+  The controllers found by FACTEST consists of a reference trajectory and a tracking controller which drives the actual trajectory to follow the reference trajectory.</p>
+  
+  <p>In our <a href="papers.html">papers</a>, we identify a type of reference trajectory such that the tracking error between the actual trajectory of the closed-loop system and the reference trajectory can be bounded and pre-computed.
   Moreover, such a bound on the tracking error is independent of the reference trajectory.
   Using such bounds on the tracking error, we propose a method that can find a reference trajectory by solving a satisfiability problem over linear constraints.
   Our overall algorithm guarantees that the resulting controller can make sure every trajectory from the initial set of the system satisfies the given reach-avoid requirement.
-  We also implement our technique in a tool FACTEST.
-  We show that FACTEST can find controllers for four vehicle models (3-6 dimensional state space and 2-4 dimensional input space) across eight scenarios (with up to 22 obstacles), all with running time at the sub-second range.
+  <!-- We also implement our technique in a tool FACTEST. -->
+  <!-- We show that FACTEST can find controllers for four vehicle models (3-6 dimensional state space and 2-4 dimensional input space) across eight scenarios (with up to 22 obstacles), all with running time at the sub-second range. -->
+  </p>
 </div>
 
+<div>
 <h1>Results Gallery</h1>
+</div>
+
+<div>
+<h2>Example reference and actual trajectories using controllers found by FACTEST</h2>
+<p>FACTEST can find controllers different vehicle models (3-6 dimensional state space and 2-4 dimensional input space), including ground, aerial, and underwater vehicles, across eight scenarios (with up to 22 obstacles), all with running time at the sub-second range.</p>
+</div>
+
 <div style="padding:0px 50px;">
   <div class="gallery">
     <a target="_blank" href="figs/car_zigzag1.png">
@@ -99,21 +109,8 @@
     <div class="desc">Example solution to the z-tunnel</div>
   </div>
 
-  <div class="gallery">
-    <a target="_blank" href="figs/all_iter_comparison.png">
-      <img src="figs/all_iter_comparison.png" alt="iter comparison" width="300">
-    </a>
-    <div class="desc">RRT vs. SAT-plan iteration comparison</div>
-  </div>
 
-  <div class="gallery">
-    <a target="_blank" href="figs/all_time_comparison.png">
-      <img src="figs/all_time_comparison.png" alt="time comparison" width="300">
-    </a>
-    <div class="desc">RRT vs. SAT-plan time comparison</div>
-  </div>
-
-  <div class="gallery" style="width:47%">
+  <div class="gallery" style="width:100%">
     <table style="width:100%">
       <tr>
         <th>Model</th>
@@ -253,9 +250,126 @@
       </tr>
     </table>
     <div class="desc">RRT vs. SAT-plan time comparison</div>
+  </div>
 </div>
+
+
+<br/>
+
+
+<div>
+<h2>Reference trajectory found by FACEST vs. RRT</h2>
+<p>To demonstrate the speed of our SMT-based reference trajectory planner, we compare it with 
+<a href="http://msl.cs.uiuc.edu/rrt/about.html">Rapidly-exploring Random Trees (RRT)</a>. The running time, number of line segments, and number of iterations needed to find a path were compared. RRT was run using the <a href="https://github.com/AtsushiSakai/PythonRobotics">Python Robotics library</a>, which is not necessarily an optimized implementation. SAT-Plan was run using <a href="https://yices.csl.sri.com/">Yices SMT Solver</a> </p>
+
+<p>
+Each planner was run 100 times. The colored bars represent the average runtime and average number of iterations. The error bars represent the range of minimum and maximum. RRT timed out for the SCOTS scenario, unable to find a trajectory within 5000 iterations. The maze scenario timed out about 10% of the time.
+Overall SAT-Plan scales in time much better as the size of the unsafe set increases. Additionally, the maximum number of iterations that RRT had to perform was far greater than the average number of line segments needed to find a safe path.
+
+</p>
+</div>
+<div style="padding:0px 50px;">
+
+  <div class="gallery">
+    <a target="_blank" href="figs/smt_easy.png">
+      <img src="figs/smt_easy.png" alt="smt easy" width="300">
+    </a>
+    <div class="desc">FACTEST on Easy Scenario</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/rrt_easy.png">
+      <img src="figs/rrt_easy.png" alt="rrt easy" width="300">
+    </a>
+    <div class="desc">RRT on Easy Scenario</div>
   </div>
 
 
+  <div class="gallery">
+    <a target="_blank" href="figs/smt_hard.png">
+      <img src="figs/smt_hard.png" alt="smt hard" width="300">
+    </a>
+    <div class="desc">FACTEST on Hard Scenario</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/rrt_hard.png">
+      <img src="figs/rrt_hard.png" alt="rrt hard" width="300">
+    </a>
+    <div class="desc">RRT on Hard Scenario</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/smt_zigzag.png">
+      <img src="figs/smt_zigzag.png" alt="smt zigzag" width="300">
+    </a>
+    <div class="desc">FACTEST on Zigzag Scenario</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/rrt_zigzag.png">
+      <img src="figs/rrt_zigzag.png" alt="rrt zigzag" width="300">
+    </a>
+    <div class="desc">RRT on Zigzag Scenario</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/smt_maze.png">
+      <img src="figs/smt_maze.png" alt="smt maze" width="300">
+    </a>
+    <div class="desc">FACTEST on Maze Scenario</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/rrt_maze.png">
+      <img src="figs/rrt_maze.png" alt="rrt maze" width="300">
+    </a>
+    <div class="desc">RRT on Maze Scenario</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/smt_part2.png">
+      <img src="figs/smt_part2.png" alt="smt barrier" width="300">
+    </a>
+    <div class="desc">FACTEST on Barrier Scenario</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/rrt_part2.png">
+      <img src="figs/rrt_part2.png" alt="rrt barrier" width="300">
+    </a>
+    <div class="desc">RRT on Barrier Scenario</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/smt_SCOTS.png">
+      <img src="figs/smt_SCOTS.png" alt="smt SCOTS" width="300">
+    </a>
+    <div class="desc">FACTEST on SCOTS Scenario</div>
+  </div>
+
+  <!-- div class="gallery">
+    <a target="_blank" href="None">
+      <img src="figs/None" alt="rrt SCOTS" width="300">
+    </a>
+    <div class="desc">RRT on Hard Scenario</div>
+  </div> -->
+</div>
+<br>
+<div style="padding:0px 50px;">
+  <div class="gallery">
+    <a target="_blank" href="figs/all_iter_comparison.png">
+      <img src="figs/all_iter_comparison.png" alt="iter comparison" width="300">
+    </a>
+    <div class="desc">RRT vs. SAT-plan iteration comparison</div>
+  </div>
+
+  <div class="gallery">
+    <a target="_blank" href="figs/all_time_comparison.png">
+      <img src="figs/all_time_comparison.png" alt="time comparison" width="300">
+    </a>
+    <div class="desc">RRT vs. SAT-plan time comparison</div>
+  </div>
+</div>
 </body>
 </html>
