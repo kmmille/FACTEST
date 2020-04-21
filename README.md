@@ -1,8 +1,16 @@
-# FACTEST Artifact Evaluation
+# FACTEST Framework
+
+FAst ConTrollEr SynThesis (FACTEST) is a framework for *controller synthesis for nonlinear systems in complex environments*. You can find links to related publications [here](https://kmmille.github.io/FACTEST/). The controller synthesis problem requires an agent, such as a mobile robot or a quadcopter, to reach a goal (green set) starting from a set of initial configurations (blue), while avoiding obstacles (red). 
+
+This repository serves as the accompanying artifact evaluation package for the CAV2020 paper.
+
+<img src="robot_barrier.png" width = "500">
 
 ## Requirements
-FACTEST is run using Python3. The following libraries are used in FACTEST:
-1. Yices - installation instructions can be found [here](https://github.com/SRI-CSL/yices2_python_bindings)
+FACTEST has been tested with Python3 on Ubuntu 16.04 and macOS 10.15 (Catalina).
+
+The following libraries are used in FACTEST. You may have to use the `--user` option in the following. 
+1. Yices - installation instructions can be found [here](https://github.com/SRI-CSL/yices2_python_bindings). For macOS first install `brew install SRI-CSL/sri-csl/yices2` then `pip3 install yices`.
 2. TuLiP Polytope
 `pip3 install polytope`
 3. Pypoman
@@ -30,7 +38,7 @@ cd Desktop\FACTEST
 
 ## Running FACTEST
 
-### Running all FACTEST Scenarios
+### Running all FACTEST Scenarios from CAV2020 paper
 
 In table 1, there is a list of scenarios that FACTEST is tested on.
 If you would like to run all the FACTEST scenarios, then run the following command:
