@@ -76,13 +76,16 @@
               
               <article class="markdown-body entry-content" itemprop="text" id="grip-content">
                 <h1>
-<a id="user-content-factest-artifact-evaluation" class="anchor" href="#factest-artifact-evaluation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>FACTEST Artifact Evaluation</h1>
+<a id="user-content-factest-framework" class="anchor" href="#factest-framework" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>FACTEST Framework</h1>
+<p>FAst ConTrollEr SynThesis (FACTEST) is a framework for <em>controller synthesis for nonlinear systems in complex environments</em>. You can find links to related publications <a href="https://kmmille.github.io/FACTEST/" rel="nofollow">here</a>. The controller synthesis problem requires an agent, such as a mobile robot or a quadcopter, to reach a goal (green set) starting from a set of initial configurations (blue), while avoiding obstacles (red).</p>
+<p>This repository serves as the accompanying artifact evaluation package for the CAV2020 paper.</p>
+<p><a href="robot_barrier.png" target="_blank" rel="noopener noreferrer"><img src="robot_barrier.png" width="500" style="max-width:100%;"></a></p>
 <h2>
 <a id="user-content-requirements" class="anchor" href="#requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Requirements</h2>
-<p>FACTEST is run using Python3. The following libraries are used in FACTEST:</p>
+<p>FACTEST has been tested with Python3 on Ubuntu 16.04 and macOS 10.15 (Catalina).</p>
+<p>The following libraries are used in FACTEST. You may have to use the <code>--user</code> option in the following.</p>
 <ol>
-<li>Yices - installation instructions can be found <a href="https://github.com/SRI-CSL/yices2_python_bindings">here</a>
-</li>
+<li>Yices - installation instructions can be found <a href="https://github.com/SRI-CSL/yices2_python_bindings">here</a>. For macOS first install <code>brew install SRI-CSL/sri-csl/yices2</code> then <code>pip3 install yices</code>.</li>
 <li>TuLiP Polytope
 <code>pip3 install polytope</code>
 </li>
@@ -111,7 +114,7 @@
 <h2>
 <a id="user-content-running-factest" class="anchor" href="#running-factest" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running FACTEST</h2>
 <h3>
-<a id="user-content-running-all-factest-scenarios" class="anchor" href="#running-all-factest-scenarios" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running all FACTEST Scenarios</h3>
+<a id="user-content-running-all-factest-scenarios-from-cav2020-paper" class="anchor" href="#running-all-factest-scenarios-from-cav2020-paper" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running all FACTEST Scenarios from CAV2020 paper</h3>
 <p>In table 1, there is a list of scenarios that FACTEST is tested on.
 If you would like to run all the FACTEST scenarios, then run the following command:</p>
 <pre><code>python3 factest_all.py --plot [bool]
@@ -140,7 +143,7 @@ If you would like to run all the FACTEST scenarios, then run the following comma
 <p>This specifies whether or not the scenario will be plotted. If <code>True</code>, then a plot showing the scenario, reference trajectory, and actual trajectory will be shown.</p>
 <p>The results of the scenario will be saved to a file called <code>results/synthesis-results/modelname_envname.csv</code>. If you choose to plot the scenario, then it will be saved to a figure called <code>results/figures/modelname_envname.png</code>.</p>
 <p>For example, if you want to save the results of the car model in the maze environment, with 10 maximum line segments and no plot, the following command would be run:</p>
-<pre><code>python factest.py car maze --segs 10 --plot False
+<pre><code>python3 factest.py car maze --segs 10 --plot False
 </code></pre>
 <p>The results from this scenario will be saved in a file called <code>car_maze.csv</code>.</p>
 <h2>
