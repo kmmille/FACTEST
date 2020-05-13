@@ -6,7 +6,6 @@
 *.aux
 *.dvi
 *.out
-*.pdf
 *.ps
 *.fdb_latexmk
 *.fls
