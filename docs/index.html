@@ -27,13 +27,14 @@
   <a href="README.html">About</a>
   <a href="papers.html">Papers</a>
   <a href="people.html">People</a>
+  <a href="appendix_a.html" class = "dropbtn">Appendix</a>
 </div>
 
 <div class="About">
   <h1>Abstract:</h1>
   <p>FACTEST is tool for synthesizing controllers for nonlinear systems with reach-avoid requirements.
   The controllers found by FACTEST consists of a reference trajectory and a tracking controller which drives the actual trajectory to follow the reference trajectory.</p>
-  
+
   <p>In our <a href="papers.html">papers</a>, we identify a type of reference trajectory such that the tracking error between the actual trajectory of the closed-loop system and the reference trajectory can be bounded and pre-computed.
   Moreover, such a bound on the tracking error is independent of the reference trajectory.
   Using such bounds on the tracking error, we propose a method that can find a reference trajectory by solving a satisfiability problem over linear constraints.
@@ -259,7 +260,7 @@
 
 <div>
 <h2>Reference trajectory found by FACEST vs. RRT</h2>
-<p>To demonstrate the speed of our SMT-based reference trajectory planner, we compare it with 
+<p>To demonstrate the speed of our SMT-based reference trajectory planner, we compare it with
 <a href="http://msl.cs.uiuc.edu/rrt/about.html">Rapidly-exploring Random Trees (RRT)</a>. The running time, number of line segments, and number of iterations needed to find a path were compared. RRT was run using the <a href="https://github.com/AtsushiSakai/PythonRobotics">Python Robotics library</a>, which is not necessarily an optimized implementation. SAT-Plan was run using <a href="https://yices.csl.sri.com/">Yices SMT Solver</a> </p>
 
 <p>
