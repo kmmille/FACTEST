@@ -54,6 +54,9 @@ elif args.env == 'SCOTS':
 elif args.env == 'barrier':
 	from envs.partition2 import *
 	dim = 2
+elif args.env == 'demo':
+	from envs.demo import *
+	dim = 2
 elif args.env == 'ztunnel':
 	from envs.ztunnel import *
 	dim = 3

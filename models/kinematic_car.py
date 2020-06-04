@@ -48,7 +48,7 @@ def run_model(q0, t, qref, uref, k_plot = [100, 100, 100]):
 	q = [q0]
 	u0 = [0, 0]
 	for i in range(0,len(t)):
-		t_step = np.linspace(t[i-1], t[i], 11)
+		t_step = np.linspace(t[i-1], t[i], 5)
 		q1 = odeint(model, q0, t_step, args = (u0,))
 		q0 = q1[1]
 		q.append(q0)
