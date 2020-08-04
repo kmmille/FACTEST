@@ -14,7 +14,7 @@ permalink: /about/
 
 The inputs to FACTEST are as follows: an environment, a model, and a maximum number of segments. The output is a reference controller. This makes it very simple to create your own scenarios to be solved by FACTEST. The documentation for using FACTEST can be found on the [GitHub page](https://github.com/kmmille/FACTEST).
 
-To get a better understanding of how FACTEST works, a brief tutorial will be provided on this page. However, it is highly recommended that you read the papers associated with FACTEST. These papers can be found [here]({{site.baseurl}}{% link papers.markdown %}).
+To get a better understanding of how FACTEST works, a brief tutorial will be provided on this page. However, it is highly recommended that you read the papers associated with FACTEST. These papers can be found [here]({{site.baseurl}}{% link papers.md %}).
 
 # Example
 # Step 1. Define Environment

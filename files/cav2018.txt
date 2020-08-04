@@ -1,0 +1,10 @@
+@inproceedings{FanMMV:CAV2018,
+author = {Chuchu Fan and Umang Mathur and Sayan Mitra and Mahesh Viswanathan},
+title = {Controller Synthesis Made Real: Reachavoid Specifications and Linear Dynamics},
+booktitle = {Computer Aided Verification},
+pages = {347–366},
+year = {2018},
+publisher = {Springer International Publishing},
+url = {https://link.springer.com/chapter/10.1007%2F978-3-319-96145-3_19},
+doi = {10.1007/978-3-319-96145-3\_19}
+}
