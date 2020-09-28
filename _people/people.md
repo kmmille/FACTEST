@@ -1,7 +1,5 @@
 ---
 layout: page
-title: People
-permalink: /people/
 ---
 
 - [Kristina Miller](https://publish.illinois.edu/kristinamiller/)
