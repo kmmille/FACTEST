@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>About | FACTEST</title>
+<meta name="generator" content="Jekyll v3.8.7" />
+<meta property="og:title" content="About" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Website for FACTEST" />
+<meta property="og:description" content="Website for FACTEST" />
+<link rel="canonical" href="http://localhost:4000/FACTEST/about/" />
+<meta property="og:url" content="http://localhost:4000/FACTEST/about/" />
+<meta property="og:site_name" content="FACTEST" />
+<script type="application/ld+json">
+{"headline":"About","url":"http://localhost:4000/FACTEST/about/","name":"FACTEST","description":"Website for FACTEST","@type":"WebSite","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/FACTEST/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/FACTEST/feed.xml" title="FACTEST" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/FACTEST/">FACTEST</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/FACTEST/papers/">Papers</a><a class="page-link" href="/FACTEST/about/">About</a><a class="page-link" href="/FACTEST/models/">Vehicle Models</a><a class="page-link" href="/FACTEST/downloads/">Downloads</a><a class="page-link" href="/FACTEST/people/">People</a><a class="page-link" href="/FACTEST/">Abstract</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">About</h1>
+  </header>
+
+  <div class="post-content">
+    
+<div>
+    <p><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+<p>FACTEST is a controller synthesis tool for nonlinear systems. Specifically, it solves reach-avoid scenarios for vehicular models. An example can be seen in the image below. The obstacles are shown in red, the initial set is shown in blue, and the goal set is shown in green. The reference trajectory returned by FACTEST is represented by the solid black line. The actual trajectory that the system follows is shown by the dotted purple line.</p>
+
+<div style="text-align:center"><img src="/FACTEST/figs/zigzag_xref.png" height="400px" /></div>
+
+<p>The inputs to FACTEST are as follows: an environment, a model, and a maximum number of segments. The output is a reference controller. This makes it very simple to create your own scenarios to be solved by FACTEST. The documentation for using FACTEST can be found on the <a href="https://github.com/kmmille/FACTEST">GitHub page</a>.</p>
+
+<p>To get a better understanding of how FACTEST works, a brief tutorial will be provided on this page. However, it is highly recommended that you read the papers associated with FACTEST. These papers can be found <a href="/FACTEST/papers/">here</a>.</p>
+
+<h1 id="example">Example</h1>
+<h1 id="step-1-define-environment">Step 1. Define Environment</h1>
+<p>Let us consider the reach avoid scenario presented in the figure above. The obstacles, initial set, and goal set are all represented as polytopes. The environment is then defined as the following:</p>
+
+<div style="background-color:SeaShell; text-align:center; border:2px solid black; padding:5px">
+  <p style="text-align:left"><b>Obstacles:</b></p>
+  \( \begin{bmatrix} -1 &amp; 1  \\ 1 &amp; 1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} 0.5 \\ 2 \\ 0 \end{bmatrix} \),
+  \( \begin{bmatrix} -1 &amp; 1  \\ 1 &amp; 1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} -1 \\ 3.5 \\ 0 \end{bmatrix} \),
+  \( \begin{bmatrix} -1 &amp; -1  \\ 1 &amp; -1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} -3 \\ 0 \\ 3 \end{bmatrix} \),
+  \( \begin{bmatrix} -1 &amp; -1  \\ 1 &amp; -1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} -1.5 \\ -1.5 \\ 3 \end{bmatrix} \),
+  \( \begin{bmatrix} -1 &amp; -1  \\ 1 &amp; -1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} -4.5 \\ 1.5 \\ 3 \end{bmatrix} \)
+
+  <p style="text-align:left"><b>Borders(included in the obstacle list):</b></p>
+  \( \begin{bmatrix} -1 &amp; 0  \\ 1 &amp; 0 \\ 0 &amp; -1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} 1.5 \\ 5 \\ 0.1 \\ 0 \end{bmatrix} \),
+  \( \begin{bmatrix} -1 &amp; 0  \\ 1 &amp; 0 \\ 0 &amp; -1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} 1.5 \\ 5 \\ -3 \\ 3.1 \end{bmatrix} \),
+  \( \begin{bmatrix} -1 &amp; 0  \\ 1 &amp; 0 \\ 0 &amp; -1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} 1.6 \\ -1.5 \\ 0 \\ 3 \end{bmatrix} \),
+  \( \begin{bmatrix} -1 &amp; 0  \\ 1 &amp; 0 \\ 0 &amp; -1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} -5 \\ 5.1 \\ 0 \\ 3 \end{bmatrix} \)
+
+  <p style="text-align:left"><b>Initial Set \(\Theta\):</b></p>
+  \( \begin{bmatrix} -1 &amp; 0  \\ 1 &amp; 0 \\ 0 &amp; -1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} 0.9 \\ -0.6 \\ 0.6 \\ 0.9 \end{bmatrix} \)
+
+  <p style="text-align:left"><b>Goal Set:</b></p>
+  \( \begin{bmatrix} -1 &amp; 0  \\ 1 &amp; 0 \\ 0 &amp; -1 \\ 0 &amp; 1 \end{bmatrix} x \leq \begin{bmatrix} -4 \\ 4.5 \\ -1 \\ 1.5 \end{bmatrix} \)
+</div>
+
+<h1 id="step-2-define-model">Step 2. Define model</h1>
+<p>The model used to navigate the reach-avoid scenario is the rearwheel kinematic car model. A tracking controller is needed to track the reference trajectory returned by FACTEST. A Lyapunov-based feedback controller is chosen. The dynamics of the car model and the control law are shown below:</p>
+
+<div style="background-color:SeaShell; text-align:center; border:2px solid black; padding:5px">
+  <p style="text-align:left"><b>Dynamics:</b></p>
+  \[ \dot{p} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{\theta} \end{bmatrix} x = \begin{bmatrix} v \sin(\theta) \\ v \cos(\theta) \\ \omega \end{bmatrix} \]
+
+  <p style="text-align:left"><b>Tracking Controller Law:</b></p>
+  \[ v = v_{ref} \cos(e_{\theta}) + k_1 e_x \]
+  \[ \omega = \omega_{ref} + v_{ref}(k_2 e_y + k_3 \sin(e_{\theta})) \]
+</div>
+
+<h1 id="step-3-compute-error-bounds">Step 3. Compute Error Bounds</h1>
+<p>The next step is to compute the error bounds of the actual trajectory from the reference trajectory. Since a Lyapunov-based controller was chosen, the error can be bounded using Lyapunov sublevel sets. This is discussed more in depth in <a href="/FACTEST/files/cav2020.pdf">this paper</a>. The error bounds can also be computed using reachability analysis, as proposed in <a href="/FACTEST/files/reachtube.pdf">this paper</a>. For this example, the bounds will be computed using the Lyapunov-based analysis. The size of the error bound is shown below:</p>
+
+<div style="background-color:SeaShell; text-align:center; border:2px solid black; padding:5px">
+  <p style="text-align:left"><b>Error Bounds:</b></p>
+  \[ \ell(n) = \sqrt{\ell_0^2 + \frac{4n}{k_2}} \quad n=0,1,\cdots,N-1 \]
+
+  where \(\ell_0\) is the size of the initial set, and \(N\) is the maximum number of line segments.
+</div>
+
+<h1 id="step-4-compute-reference-controller">Step 4. Compute Reference Controller</h1>
+<p>Once the error bounds are computed, the reference controller can be found. This is done in 2 steps: finding a reference path, then converting that path to a reference trajectory. Finding the reference path can be done by either solving a SAT problem or a MILP problem. The path \( \xi_{ref}(t) \) is returned as a piecewise linear path. Once the path is found, it is converted to a reference trajectory and the reference controller \( u_{ref}(t) \) is computed. The reference controller is returned as \( [\Theta, t, \xi_{ref}, u_{ref}] \) . The returned reference controller is guaranteed safe for any trajectory starting in the initial set. If the reference controller is fed to the system defined in step 2, then an example trajectory is shown below:</p>
+
+<div style="background-color:SeaShell; text-align:center; border:2px solid black; padding:5px">
+   <p style="text-align:left"><b>Solution:</b></p>
+   <img src="/FACTEST/figs/zigzag_sol.png" height="400px" />
+   <p>Example solution to the reach-avoid scenario</p>
+ </div>
+
+<!-- This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+
+You can find the source code for Minima at GitHub:
+[jekyll][jekyll-organization] /
+[minima](https://github.com/jekyll/minima)
+
+You can find the source code for Jekyll at GitHub:
+[jekyll][jekyll-organization] /
+[jekyll](https://github.com/jekyll/jekyll)
+
+
+[jekyll-organization]: https://github.com/jekyll -->
+</p>
+</div>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/FACTEST/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">FACTEST</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">FACTEST</li><li><a class="u-email" href="mailto:kmmille2@illinois.edu">kmmille2@illinois.edu</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/kmmille"><svg class="svg-icon"><use xlink:href="/FACTEST/assets/minima-social-icons.svg#github"></use></svg> <span class="username">kmmille</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Website for FACTEST</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

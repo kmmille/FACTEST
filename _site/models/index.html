@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Vehicle Models | FACTEST</title>
+<meta name="generator" content="Jekyll v3.8.7" />
+<meta property="og:title" content="Vehicle Models" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Website for FACTEST" />
+<meta property="og:description" content="Website for FACTEST" />
+<link rel="canonical" href="http://localhost:4000/FACTEST/models/" />
+<meta property="og:url" content="http://localhost:4000/FACTEST/models/" />
+<meta property="og:site_name" content="FACTEST" />
+<script type="application/ld+json">
+{"headline":"Vehicle Models","url":"http://localhost:4000/FACTEST/models/","description":"Website for FACTEST","@type":"WebPage","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/FACTEST/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/FACTEST/feed.xml" title="FACTEST" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/FACTEST/">FACTEST</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/FACTEST/papers/">Papers</a><a class="page-link" href="/FACTEST/about/">About</a><a class="page-link" href="/FACTEST/models/">Vehicle Models</a><a class="page-link" href="/FACTEST/downloads/">Downloads</a><a class="page-link" href="/FACTEST/people/">People</a><a class="page-link" href="/FACTEST/">Abstract</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Vehicle Models</h1>
+  </header>
+
+  <div class="post-content">
+    
+<div>
+    <p><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+<p>The files for all the vehicle models can be found in the models folder on the <a href="https://github.com/kmmille/FACTEST">GitHub repository</a>.</p>
+</p>
+</div>
+
+<div>
+    <p><h1 id="car-model">Car Model</h1>
+<p>The rearwheel kinematic car is one of the models used in testing the 2D scenarios. The dynamics for the car are given by the following.</p>
+
+<div style="text-align:center"> \[ \dot{q} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{\theta} \end{bmatrix} = \begin{bmatrix} \cos(\theta) &amp; 0 \\ \sin(\theta) &amp; 0 \\ 0 &amp; 1 \end{bmatrix} \begin{bmatrix} v \\ w \end{bmatrix} \] </div>
+
+<p>The error for the car are given by the following.</p>
+
+<div style="text-align:center"> \[ \begin{bmatrix} e_x \\ e_y \\ e_{\theta} \end{bmatrix} = \begin{bmatrix} \cos(\theta) &amp; \sin(\theta) &amp; 0 \\ -\sin(\theta) &amp; \cos(\theta) &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} \begin{bmatrix} x_{ref} - x \\ y_{ref} - y \\ \theta_{ref} - \theta \end{bmatrix} \] </div>
+
+<p>The error dynamics are given by the following.</p>
+
+<div style="text-align:center"> \[ \begin{bmatrix} \dot{e}_x \\ \dot{e}_y \\ \dot{e}_{\theta} \end{bmatrix} = \begin{bmatrix} \omega e_y - v + v_{ref} \cos(e_{\theta}) \\ -\omega e_x + v_{ref} \sin(e_{\theta}) \\ \omega_{ref} - \omega \end{bmatrix} \] </div>
+
+<p>The following control law is proposed:</p>
+
+<div style="text-align:center"> \[ v = v_{ref} \cos(e_{\theta}) + k_1 e_x \]
+\[ \omega = \omega_{ref} + v_{ref}(k_2 e_y + k_3 \sin(e_{\theta})) \] </div>
+
+<p>Substituting this control law, the error dynamics become:</p>
+
+<div style="text-align:center"> \[ \begin{bmatrix} \dot{e}_x \\ \dot{e}_y \\ \dot{e}_{\theta} \end{bmatrix} = \begin{bmatrix} (\omega_{ref} + v_{ref}(k_2 e_y + k_3 \sin(e_{\theta}))) e_y - k_1 e_x \\ -(\omega_{ref} + v_{ref}(k_2 e_y + k_3 \sin(e_{\theta}))) e_x + v_{ref} \sin(e_{\theta}) \\ \omega_{ref} - \omega \end{bmatrix} \] </div>
+
+<p>A candidate Lyapunov function for the system is given below.</p>
+
+<div style="text-align:center"> \[ V = \frac{1}{2} (e_x^2 + e_y^2) + \frac{1 - \cos(e_{\theta})}{k_2} \] </div>
+
+<p>The time derivative of this Lyapunov function is:</p>
+
+<div style="text-align:center"> \[ \dot{V} = -k_1 e_x^2 - \frac{v_{ref} k_3 \sin^2(e_{\theta})}{k_2} \] </div>
+
+<p> The Lyapunov function is positive semi-definite and its time derivative is negative semi-definite, meaning it is a valid Lyapunov function. The \( \frac{1 - \cos(e_{\theta})}{k_2} \) term can be upper bounded by \( \frac{2}{k_2} \). Initially \( V(e(0)) \leq \frac{\ell^2}{2} + \frac{2}{k_2} \) where \( \ell^2 = e_x^2 + e_y^2 \). Then, for all time \( V(e(t)) \leq \frac{\ell^2}{2} + \frac{2i}{k_2} \) for the \( i^{th} \) segment. Therefore, the error of the car is upper bounded by \( \sqrt{( \ell^2 + \frac{4i}{k_2})} \) .</p>
+</p>
+</div>
+
+<div>
+    <p><h1 id="appendix-a-from-fast-and-guaranteed-safe-controller-synthesis">Appendix A from <i>Fast and Guaranteed Safe Controller Synthesis</i></h1>
+<h1 id="a1-robot-model">A.1 Robot Model</h1>
+
+<p>The robot is one of the models used in testing the 2D scenarios. The kinematics for a robot are given by</p>
+
+<div style="text-align:center"> \[ \dot{q} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{\theta} \end{bmatrix} = \begin{bmatrix} \cos(\theta) &amp; 0 \\ \sin(\theta) &amp; 0 \\ 0 &amp; 1 \end{bmatrix} \begin{bmatrix} v \\ \omega \end{bmatrix} \] </div>
+
+<p> The model can be made bijective by using the states \( s = \sin(\theta) \) and \( c = \cos(\theta) \) in place of \( \theta \). The kinematic equation becomes </p>
+
+<div style="text-align:center"> \[ \dot{q} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{s} \\ \dot{c} \end{bmatrix} = \begin{bmatrix} c &amp; 0 \\ s &amp; 0 \\ 0 &amp; c \\ 0 &amp; s \end{bmatrix} \begin{bmatrix} v \\ \omega \end{bmatrix} \] </div>
+
+<p>When a reference trajectory is introduced, the error states are given by</p>
+
+<div style="text-align:center">
+\[ e_x = c(x_{ref} - x) + s(y_{ref} - y) \]
+\[ e_y = -s(x_{ref} - x) + c(y_{ref} - y) \]
+\[ e_s = \sin(\theta_{ref} - \theta) = s_{ref}c - c_{ref}s \]
+\[ e_c = \cos(\theta_{ref} - \theta) = c_{ref}c + s_{ref}s -1 \]
+</div>
+
+<p>From <a href="https://www.sciencedirect.com/science/article/pii/S0921889011001023?casa_token=QRzosI8VUdoAAAAA:0C4GTrNm3QpxABHRRQ3ZGcEL8ClJ4J98cOLzTaryxA1CVYR85Y1OF2MH7TGNc7gdSgcmniO1QiE">5</a>, the following Lyapunov function is proposed:</p>
+
+<div style="text-align:center"> \[ V = \frac{k}{2} (e_x^2 + e_y^2) + \frac{1}{2(1 + \frac{e_c}{a})} (e_s^2 + e_c^2) \] </div>
+
+<p> where \( k &gt; 0 \) and \( a &gt; 0 \) are constants. The range of \( e_c \) is \( [-2, 0] \) and therefore \( 0 &lt; \frac{a - 2}{a} \leq 1 + \frac{e_c}{a} \leq 1 \) and \( 1 \leq \frac{1}{1 + \frac{e_c}{a}} \leq \frac{a}{a-2} \) . The Lyapunov function has the derivative </p>
+
+<div style="text-align:center"> \[ \dot{V} = -ke_x v_b + e_s \left( k v_{ref} e_y - \frac{\omega_b}{(1 + \frac{e_c}{a})^2} \right) \] </div>
+
+<p>which is negative semi-definite with the control law</p>
+
+<div style="text-align:center">
+\[ v_b = k_x e_x \]
+\[ \omega_b = k v_{ref} e_y (1 + \frac{e_c}{a})^2 + k_s e_s \left[ \left( 1 + \frac{e_c}{a} \right)^2 \right]^n \]
+</div>
+
+<p> It can be checked that \( e_s^2 + e_c^2 = -2 e_c \in [0, 4] \). The term \( \frac{1}{2(1 + \frac{e_c}{a})}(e_s^2 + e_c^2) \) in \( V \) can also be bounded with \( \frac{1}{2(1 + \frac{e_c}{a})}(e_s^2 + e_c^2) \in [2, \frac{2a}{a-2}] \). </p>
+</p>
+</div>
+
+<div>
+    <p><h1 id="a2-autonomous-underwater-vehicle-auv-model">A.2 Autonomous Underwater Vehicle (AUV) Model</h1>
+
+<p> The autonomous underwater vehicle (AUV) is one of the models used for testing the 3D scenarios. The position of the AUV is \( \textbf{x} = \begin{bmatrix} x &amp; y &amp; z \end{bmatrix}^T \), and the Euler angles (roll, pitch, and yaw respectively) are \( \boldsymbol{\theta} = \begin{bmatrix} \phi &amp; \theta &amp; \psi \end{bmatrix}^T \). The equations of motion for the position and Euler angles are given by </p>
+
+<div style="text-align:center">
+\[ \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{z} \end{bmatrix} = \begin{bmatrix} \cos{\psi} \cos{\theta} \\ \sin{\psi} \cos{\theta} \\ \sin{\theta} \end{bmatrix} v \]
+\[ \begin{bmatrix} \dot{\phi} \\ \dot{\theta} \\ \dot{\psi} \end{bmatrix} =
+   \begin{bmatrix} 1 &amp; \sin{\phi} \tan{\theta} &amp; \cos{\phi} \tan{\theta} \\
+                   0 &amp; \cos{\phi} &amp; -\sin{\phi} \\
+                   0 &amp; \sin{\phi} \sec{\theta} &amp; \cos{\phi} \sec{\theta} \end{bmatrix}
+   \begin{bmatrix} \omega_x \\ \omega_y \\ \omega_z \end{bmatrix} \]
+</div>
+
+<p> The angular acceleration \( \boldsymbol{\omega} = \begin{bmatrix} \omega_x &amp; \omega_y &amp; \omega_z \end{bmatrix} \) is given in the local frame. By combining the equations of motion for the position and Euler angles, the total kinematis are given by  </p>
+
+<div style="text-align:center">
+\[ \begin{bmatrix} \dot{\bf x} \\ \dot{\boldsymbol{\theta}} \end{bmatrix} =
+   \begin{bmatrix} {\bf b_1} &amp; 0_{3 \times 3} \\ 0_{1 \times 3} &amp; {\bf B_2} \end{bmatrix}
+   \begin{bmatrix} u_1 \\ {\bf u_2} \end{bmatrix} \] </div>
+
+<p> where the \( m \times n\) zero matrix is denoted by \( 0_{m \times n} \) and  </p>
+
+<div style="text-align:center">
+\[ \begin{gathered}
+      {\bf b_1} = \begin{bmatrix} \cos{\psi} \cos{\theta} \\ \sin{\psi} \cos{\theta} \\ -\sin{\theta} \end{bmatrix} \\
+      {\bf B_2} = \begin{bmatrix} 1 &amp; \sin{\phi} \tan{\theta} &amp; \cos{\phi} \tan{\theta} \\ 0 &amp; \cos{\phi} &amp; -\sin{\phi} \\ 0 &amp; \sin{\phi} \sec{\theta} &amp; \cos{\phi} \sec{\theta} \end{bmatrix}
+    \end{gathered} \]
+</div>
+
+<p>The error is defined as</p>
+
+<div style="text-align:center">
+\[ {\bf x_e} = {\bf R}^\top ({\bf x_{ref}} - {\bf x}) \]
+\[ \boldsymbol{\theta}_e = \boldsymbol{\theta}_{ref} - \boldsymbol{\theta} \]
+</div>
+
+<p> where \( {\bf R} \) is the rotation matrix </p>
+
+<div style="text-align:center">
+\[ {\bf R} = \begin{bmatrix} c\psi c\theta &amp; c\psi s\theta s\phi - s\psi c\phi &amp; c\psi s\theta c\phi + s\psi s\phi \\ s\psi c\theta &amp; s\psi s\theta s\phi + c\psi c\phi &amp; s\psi s\theta c\phi - c\psi s\phi \\ -s\theta &amp; c\theta s\phi &amp; c\theta c\phi \end{bmatrix} \]
+</div>
+
+<p> Note that \( c_{\theta} \) and \( s_{\theta} \) denote \( \cos(\theta) \) and \( \sin(\theta) \) respectively. Consider the Lyapunov function: </p>
+
+<div style="text-align:center"> \[ V = \dfrac{1}{2} {\bf x_e}^T {\bf x_e} + {\bf k}^T {\bf f}(\boldsymbol{\theta}_e) \] </div>
+
+<p>where \( {\bf k} = \begin{bmatrix} k_1 &amp; k_2 &amp; k_3 \end{bmatrix}^T \) is the controller gains vector and \( {\bf f}(\boldsymbol{\theta}_e) = \begin{bmatrix} 1-\cos{\phi_e} &amp; 1-\cos{\theta_e} &amp; 1-\cos{\psi_e} \end{bmatrix}^T \)
+is a vector-valued function. The time derivative of the Lyapunov function is
+</p>
+
+<div style="text-align:center"> \[ \dot{V} = {\bf x_e}^T \dot{\bf x}_e + {\bf k}^T \dfrac{d{\bf f}}{d \boldsymbol{\theta}_e}\dot{\boldsymbol{\theta}}_e \] </div>
+
+<p>The error dynamics are given as</p>
+
+<div style="text-align:center"> \[ \begin{gathered} \dot{\bf x}_e = {\bf b}_{1e} u_{1d} - {\bf R}^T {\bf b}_1 u_1 - \boldsymbol{\omega} \times {\bf x}_e \\ \dot{\boldsymbol{\theta}}_e = \dot{\boldsymbol{\theta}}_{ref} - \dot{\boldsymbol{\theta}} = {\bf B}_{2ref} {\bf u}_2d - {\bf B}_2 {\bf u}_2 \end{gathered} \] </div>
+
+<p> When the error dynamics are substituted into \( \dot{V} \), it becomes </p>
+
+<div style="text-align:center"> \[ \dot{V} = {\bf p_e}^\top \{ {\bf q} + ({\bf B_{2ref}} - {\bf B_2}){\bf u_{2ref}} - {\bf B_2}{\bf u_{2ref}} \} \\ + {\bf x_e} \{v_{ref} (\cos{\psi_e} \cos{\theta_e} - 1) - v_b \} \] </div>
+
+<p>The feedback control law is chosen to be</p>
+
+<div style="text-align:center"> \[ \begin{gathered} u_1 = v_{ref} + v_b \\ {\bf u_2} = {\bf u_{2ref}} + {\bf u_{2b}} \end{gathered} \] </div>
+
+<p> where the subscript \( b \) denotes the feedback terms. The feedback terms are chosen to be  </p>
+
+<div style="text-align:center"> \[ \begin{gathered} v_b = v_{ref} (\cos{\psi_e} \cos{\theta_e} - 1) + \gamma^2 x_e \\ {\bf u_{2b}} = {\bf B_2}^{-1} \{ {\bf q} + ({\bf B_{2ref}} - {\bf B_2}) {\bf u_{2ref}} + {\bf p_e} \} \end{gathered} \] </div>
+
+<p> where \( \gamma \) is a chosen constant, \( x_e \) is the error in the local \( x \) position, \( {\bf q} = \begin{bmatrix} 0 &amp; -z_e v_{ref} / k_2 &amp; y_e v_{ref} \cos{\theta_e} / k_3 \end{bmatrix} ^T \), and \( {\bf p_e} = \begin{bmatrix} k_1 \sin{\phi_e} &amp; k_2 \sin{\theta_e} &amp; k_3 \sin{\psi_e} \end{bmatrix} ^T \). When the inputs are substituted into \( \dot{V} \), the time derivative becomes  </p>
+
+<div style="text-align:center"> \[ \dot{V} = {\bf p}_e^T {\bf p}_e - \gamma^2 x_e^2 \] </div>
+
+<p> which is negative semi-definite. We could also see that term \( {\bf k}^T {\bf f}(\boldsymbol{\theta}_e) \in [0,2(k_1+k_2+k_3)] \) for any \( \boldsymbol{\theta}_e \). </p>
+</p>
+</div>
+
+<div>
+    <p><h1 id="a3-hovercraft-model">A.3 hovercraft Model</h1>
+
+<p> The hovercraft is one of the models used in testing the 3D scenarios. The \( x \), \( y \), \( z \) and \( \theta \) states are the same as the car. A fourth state is added to allow the car to hover. The kinematics for the hovercraft are given by  </p>
+
+<div style="text-align:center"> \[ \dot{q} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{z} \\ \dot{\theta} \end{bmatrix} = \begin{bmatrix} \cos(\theta) &amp; 0 &amp; 0 \\ \sin(\theta) &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1  \end{bmatrix} \begin{bmatrix} v \\ v_z \\ \omega \end{bmatrix} \] </div>
+
+<p> where \( v \) is the velocity in the xy-plane, \( v_z \) is the velocity along the z-axis, and \( \omega \) is the rate of turning. When a reference trajectory is introduced, the error states are given by </p>
+
+<div style="text-align:center">
+\[ e_x = \cos(\theta) (x_{ref} - x) + \sin(\theta) (y_{ref} - y) \]
+\[ e_y = -\sin(\theta) (x_{ref} - x) + \cos(\theta) (y_{ref} - y) \]
+\[ e_z = z_{ref} - z \]
+\[ e_{\theta} = \theta_{ref} - \theta \]
+</div>
+
+<p>The following Lyapunov function is proposed:</p>
+
+<div style="text-align:center"> \[ V = \frac{1}{2}(e_x^2 + e_y^2 + e_z^2) + \frac{1 - \cos(e_{\theta})}{k_2} \] </div>
+
+<p>with the time derivative</p>
+
+<div style="text-align:center"> \[ \dot{V} = -k_1 e_x^2 - k_4 e_z^2 - \frac{v_{ref} k_3 \sin^2(e_{\theta})}{k_2} \] </div>
+
+<p> This time derivative is negative semi-definite when \( k_1, k_2, k_3, k_4 &gt; 0 \) and the control law is given by: </p>
+
+<div style="text-align:center">
+\[ v = v_{ref} \cos(e_{\theta}) + k_1 e_x \]
+\[ \omega = \omega_{ref} + v_{ref} (k_2 e_y + k_3 \sin(e_{\theta})) \]
+\[ v_z = v_{z,{ref}} + k_4 e_z \]
+</div>
+
+<p> We can also see that the term \( \frac{1 - \cos(e_{\theta})}{k_2} \in [0, \frac{2}{k_2}] \) for any \( e_{\theta} \). </p>
+</p>
+</div>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/FACTEST/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">FACTEST</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">FACTEST</li><li><a class="u-email" href="mailto:kmmille2@illinois.edu">kmmille2@illinois.edu</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/kmmille"><svg class="svg-icon"><use xlink:href="/FACTEST/assets/minima-social-icons.svg#github"></use></svg> <span class="username">kmmille</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Website for FACTEST</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

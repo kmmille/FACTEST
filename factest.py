@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Run benchmarks
 # Written by: Kristina Miller
 

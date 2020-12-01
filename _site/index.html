@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Abstract | FACTEST</title>
+<meta name="generator" content="Jekyll v3.8.7" />
+<meta property="og:title" content="Abstract" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Website for FACTEST" />
+<meta property="og:description" content="Website for FACTEST" />
+<link rel="canonical" href="http://localhost:4000/FACTEST/" />
+<meta property="og:url" content="http://localhost:4000/FACTEST/" />
+<meta property="og:site_name" content="FACTEST" />
+<script type="application/ld+json">
+{"headline":"Abstract","url":"http://localhost:4000/FACTEST/","name":"FACTEST","description":"Website for FACTEST","@type":"WebSite","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/FACTEST/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/FACTEST/feed.xml" title="FACTEST" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/FACTEST/">FACTEST</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/FACTEST/papers/">Papers</a><a class="page-link" href="/FACTEST/about/">About</a><a class="page-link" href="/FACTEST/models/">Vehicle Models</a><a class="page-link" href="/FACTEST/downloads/">Downloads</a><a class="page-link" href="/FACTEST/people/">People</a><a class="page-link" href="/FACTEST/">Abstract</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Abstract</h1>
+  </header>
+
+  <div class="post-content">
+    
+<div>
+    <p><h2 id="abstract">Abstract</h2>
+
+<p>FACTEST is tool for synthesizing controllers for nonlinear systems with reach-avoid requirements. The controllers found by FACTEST consists of a reference trajectory and a tracking controller which drives the actual trajectory to follow the reference trajectory.</p>
+
+<p>In our <a href="/FACTEST/papers/">papers</a>, we identify a type of reference trajectory such that the tracking error between the actual trajectory of the closed-loop system and the reference trajectory can be bounded and pre-computed. Moreover, such a bound on the tracking error is independent of the reference trajectory. Using such bounds on the tracking error, we propose a method that can find a reference trajectory by solving a satisfiability problem over linear constraints. Our overall algorithm guarantees that the resulting controller can make sure every trajectory from the initial set of the system satisfies the given reach-avoid requirement.</p>
+</p>
+</div>
+
+<div>
+    <p><h2 id="results-gallery">Results Gallery</h2>
+<h1 id="example-reference-and-actual-trajectories-using-controllers-found-by-factest">Example reference and actual trajectories using controllers found by FACTEST</h1>
+
+<p>FACTEST can find controllers different vehicle models (3-6 dimensional state space and 2-4 dimensional input space), including ground, aerial, and underwater vehicles, across eight scenarios (with up to 22 obstacles), all with running time at the sub-second range.</p>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/car_zigzag1.png" /></td>
+    <td><img src="/FACTEST/figs/car_zigzag2.png" /></td>
+    <td><img src="/FACTEST/figs/car_zigzag3.png" /></td>
+  </tr>
+  <tr>
+    <td>Example solution to zigzag1</td>
+    <td>Example solution to zigzag2</td>
+    <td>Example solution to zigzag3</td>
+  </tr>
+</table>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/car_maze.png" /></td>
+    <td><img src="/FACTEST/figs/robot_barrier.png" /></td>
+  </tr>
+  <tr>
+    <td>Example solution to maze</td>
+    <td>Example solution to barrier</td>
+  </tr>
+</table>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/auv_ltunnel.png" /></td>
+    <td><img src="/FACTEST/figs/auv_ztunnel.png" /></td>
+  </tr>
+  <tr>
+    <td>Example solution to L-tunnel</td>
+    <td>Example solution to Z-tunnel</td>
+  </tr>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Model</th>
+      <th style="text-align: center">Env</th>
+      <th style="text-align: center">Initial Set Size</th>
+      <th style="text-align: center"># Obstacles</th>
+      <th style="text-align: center">Time</th>
+      <th style="text-align: center"># Partitions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">car</td>
+      <td style="text-align: center">zigzag1</td>
+      <td style="text-align: center">0.200</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">0.028</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">car</td>
+      <td style="text-align: center">zigzag2</td>
+      <td style="text-align: center">0.400</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">0.144</td>
+      <td style="text-align: center">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">car</td>
+      <td style="text-align: center">zigzag3</td>
+      <td style="text-align: center">0.600</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">0.605</td>
+      <td style="text-align: center">16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">car</td>
+      <td style="text-align: center">maze</td>
+      <td style="text-align: center">0.200</td>
+      <td style="text-align: center">22</td>
+      <td style="text-align: center">0.078</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">car</td>
+      <td style="text-align: center">barrier</td>
+      <td style="text-align: center">0.707</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">0.415</td>
+      <td style="text-align: center">22</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">car</td>
+      <td style="text-align: center">SCOTS</td>
+      <td style="text-align: center">0.070</td>
+      <td style="text-align: center">19</td>
+      <td style="text-align: center">0.667</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">robot</td>
+      <td style="text-align: center">zigzag1</td>
+      <td style="text-align: center">0.200</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">0.025</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">robot</td>
+      <td style="text-align: center">zigzag2</td>
+      <td style="text-align: center">0.400</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">0.196</td>
+      <td style="text-align: center">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">robot</td>
+      <td style="text-align: center">zigzag3</td>
+      <td style="text-align: center">0.600</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">0.612</td>
+      <td style="text-align: center">16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">robot</td>
+      <td style="text-align: center">maze</td>
+      <td style="text-align: center">0.200</td>
+      <td style="text-align: center">22</td>
+      <td style="text-align: center">0.079</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">robot</td>
+      <td style="text-align: center">barrier</td>
+      <td style="text-align: center">0.707</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">0.498</td>
+      <td style="text-align: center">22</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">robot</td>
+      <td style="text-align: center">SCOTS</td>
+      <td style="text-align: center">0.070</td>
+      <td style="text-align: center">19</td>
+      <td style="text-align: center">0.635</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">auv</td>
+      <td style="text-align: center">Z-tunnel</td>
+      <td style="text-align: center">0.866</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">0.372</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">auv</td>
+      <td style="text-align: center">L-tunnel</td>
+      <td style="text-align: center">0.866</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">0.317</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">hovercraft</td>
+      <td style="text-align: center">Z-tunnel</td>
+      <td style="text-align: center">0.866</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">0.472</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">hovercraft</td>
+      <td style="text-align: center">L-tunnel</td>
+      <td style="text-align: center">0.866</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">0.140</td>
+      <td style="text-align: center">1</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="reference-trajectory-found-by-facest-vs-rrt">Reference trajectory found by FACEST vs. RRT</h1>
+
+<p>To demonstrate the speed of our SMT-based reference trajectory planner, we compare it with <a href="http://msl.cs.uiuc.edu/rrt/about.html">Rapidly-exploring Random Trees (RRT)</a>. The running time, number of line segments, and number of iterations needed to find a path were compared. RRT was run using the <a href="https://github.com/AtsushiSakai/PythonRobotics">Python Robotics library</a>, which is not necessarily an optimized implementation. SAT-Plan was run using <a href="https://yices.csl.sri.com/">Yices SMT Solver</a>.</p>
+
+<p>Each planner was run 100 times. The colored bars represent the average runtime and average number of iterations. The error bars represent the range of minimum and maximum. RRT timed out for the SCOTS scenario, unable to find a trajectory within 5000 iterations. The maze scenario timed out about 10% of the time. Overall SAT-Plan scales in time much better as the size of the unsafe set increases. Additionally, the maximum number of iterations that RRT had to perform was far greater than the average number of line segments needed to find a safe path.</p>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/smt_easy.png" /></td>
+    <td><img src="/FACTEST/figs/rrt_easy.png" /></td>
+  </tr>
+  <tr>
+    <td>FACTEST on easy scenario</td>
+    <td>RRT on easy scenario</td>
+  </tr>
+</table>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/smt_hard.png" /></td>
+    <td><img src="/FACTEST/figs/rrt_hard.png" /></td>
+  </tr>
+  <tr>
+    <td>FACTEST on hard scenario</td>
+    <td>RRT on hard scenario</td>
+  </tr>
+</table>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/smt_zigzag.png" /></td>
+    <td><img src="/FACTEST/figs/rrt_zigzag.png" /></td>
+  </tr>
+  <tr>
+    <td>FACTEST on zigzag scenario</td>
+    <td>RRT on zigzag scenario</td>
+  </tr>
+</table>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/smt_part2.png" /></td>
+    <td><img src="/FACTEST/figs/rrt_part2.png" /></td>
+  </tr>
+  <tr>
+    <td>FACTEST on maze scenario</td>
+    <td>RRT on maze scenario</td>
+  </tr>
+</table>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/smt_maze.png" /></td>
+    <td><img src="/FACTEST/figs/rrt_maze.png" /></td>
+  </tr>
+  <tr>
+    <td>FACTEST on maze scenario</td>
+    <td>RRT on maze scenario</td>
+  </tr>
+</table>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/smt_SCOTS.png" width="367px" /></td>
+    <td>TIME OUT</td>
+  </tr>
+  <tr>
+    <td>FACTEST on SCOTS scenario</td>
+    <td>RRT timed out on SCOTS scenario</td>
+  </tr>
+</table>
+
+<table style="text-align:center; width:100%">
+  <tr>
+    <td><img src="/FACTEST/figs/all_time_comparison.png" /></td>
+    <td><img src="/FACTEST/figs/all_iter_comparison.png" /></td>
+  </tr>
+  <tr>
+    <td>RRT vs. SAT-plan time comparison</td>
+    <td>RRT vs. SAT-plan iteration comparison</td>
+  </tr>
+</table>
+</p>
+</div>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/FACTEST/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">FACTEST</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">FACTEST</li><li><a class="u-email" href="mailto:kmmille2@illinois.edu">kmmille2@illinois.edu</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/kmmille"><svg class="svg-icon"><use xlink:href="/FACTEST/assets/minima-social-icons.svg#github"></use></svg> <span class="username">kmmille</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Website for FACTEST</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,6 +1,8 @@
 # L-tunnel environment
 # Written by: Kristina Miller
 
+import sys
+sys.path.append("../")
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 from util.plot_polytope3d import *
@@ -76,3 +78,7 @@ def plot_problem():
 	axes.set_zlabel('z')
 
 	return axes
+
+if __name__ == '__main__':
+	plot_problem()
+	plt.show()
