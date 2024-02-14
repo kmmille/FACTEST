@@ -1,13 +1,13 @@
 import sys, os
 currFile = os.path.abspath(__file__)
-modelPath = currFile.replace('/factest/synthesis/factest_base.py', '')
+modelPath = currFile.replace('/factest/synthesis/factest_base_yices.py', '')
 sys.path.append(modelPath)
 
 import numpy as np
 import polytope as pc
-import z3
+import yices
 
-class FACTEST_Z3():
+class FACTEST_yices:
     def __init__(self, initial_poly, goal_poly, unsafe_polys, seg_max = 3, part_max = 2, print_statements = True):
         self.initial_parts = {0:{'poly':initial_poly,'depth':0, 'xref':None}}
         self.final_parts = {}
@@ -18,11 +18,58 @@ class FACTEST_Z3():
         self.part_max = part_max
         self.print_statements = print_statements
 
+    def partition_polytope(self,poly):
+        print('partitioning!')
+        new_polys = []
+        if self.dims != 2 and self.dims != 3:
+            raise Exception('Can only handle workspaces of dimensions 2 or 3! Current workspace dimension: %s' %(self.dims))
+        else:
+            center = poly.chebXc
+            x_center = np.array([center[0]])
+            y_center = np.array([center[1]])
+            if self.dims == 2:
+                x_less_than = np.array([1,0])
+                x_greater_than = np.array([-1,0])
+                y_less_than = np.array([0,1])
+                y_greater_than = np.array([0,-1])
+
+                A_ul = np.vstack((poly.A, np.vstack((x_less_than, y_greater_than))))
+                b_ul = np.hstack((poly.b, np.hstack((x_center, -1*y_center))))
+                part_ul = pc.reduce(pc.Polytope(A_ul, b_ul))
+                new_polys.append(part_ul)
+
+                A_ur = np.vstack((poly.A, np.vstack((x_greater_than, y_greater_than))))
+                b_ur = np.hstack((poly.b, np.hstack((-1*x_center, -1*y_center))))
+                part_ur = pc.reduce(pc.Polytope(A_ur, b_ur))
+                new_polys.append(part_ur)
+
+                A_ll = np.vstack((poly.A, np.vstack((x_less_than, y_less_than))))
+                b_ll = np.hstack((poly.b, np.hstack((x_center, y_center))))
+                part_ll = pc.reduce(pc.Polytope(A_ll, b_ll))
+                new_polys.append(part_ll)
+
+                A_lr = np.vstack((poly.A, np.vstack((x_less_than, y_less_than))))
+                b_lr = np.hstack((poly.b, np.hstack((x_center, y_center))))
+                part_lr = pc.reduce(pc.Polytope(A_lr, b_lr))
+                new_polys.append(part_lr)
+
+                return new_polys
+
+            else:
+                raise Exception('Workspace dimension 3 not yet implemented!') #TODO: Implement the 3d polytope partition
+                z_center = np.array([center[2]])
+                x_less_than = np.array([1,0,0])
+                x_greater_than = np.array([-1,0,0])
+                y_less_than = np.array([0,1,0])
+                y_greater_than = np.array([0,-1,0])
+                z_less_than = np.array([0,0,1])
+                z_greater_than = np.array([0,0,-1])
+                        
     def add_initial_constraints(self, init_poly):
         init_center = init_poly.chebXc
-        for j in range(self.dims):
-            self.s.add(self.x_ref_terms[0][j] == init_center[j])
-
+        init_constraints = [yices.Terms.parse_term("(= xref_%s[0] %s)" %(j+1, init_center[j])) for j in range(self.dims)]
+        self.ctx.assert_formulas(init_constraints)
+        
     def add_goal_constraints(self, num_segs):
         A_goal = self.goal_poly.A
         b_goal = self.goal_poly.b
@@ -31,11 +78,10 @@ class FACTEST_Z3():
             A_row = A_goal[row]
             b_val = b_goal[row] #TODO: Need to deal with the bloating
 
-            row_sum = 0
-            for j in range(self.dims):
-                row_sum += self.x_ref_terms[num_segs][j]*A_row[j]
-            
-            self.s.add(row_sum <= b_val)
+            mults = ["(* xref_%s[%s] %s)" %(j+1, num_segs, A_row[j]) for j in range(self.dims)]
+            goal_constraints = [yices.Terms.parse_term("(< (+ %s) %s)"%(' '.join(mults), b_val))]
+
+            self.ctx.assert_formulas(goal_constraints)
 
     def add_unsafe_constraints(self, num_segs):
         for seg in range(num_segs):
@@ -48,40 +94,39 @@ class FACTEST_Z3():
                     A_row = A_obs[row]
                     b_val = b_obs[row] #TODO: Need to deal with the bloating
 
-                    row_sum_0 = 0
-                    row_sum_1 = 0
-                    for j in range(self.dims):
-                        row_sum_0 += self.x_ref_terms[seg][j]*A_row[j]
-                        row_sum_1 += self.x_ref_terms[seg+1][j]*A_row[j]
-                    row_constraint = z3.And(row_sum_0 > b_val, row_sum_1 > b_val)
-                    obs_constraints.append(row_constraint)
+                    mults_0 = ["(* xref_%s[%s] %s)" %(j+1, seg, A_row[j]) for j in range(self.dims)]
+                    mults_1 = ["(* xref_%s[%s] %s)" %(j+1, seg+1, A_row[j]) for j in range(self.dims)]
+                    row_constraint = ["(and (> (+ %s) %s) (> (+ %s) %s))" %(' '.join(mults_0), b_val, ' '.join(mults_1), b_val)]
+                    obs_constraints.extend(row_constraint)
 
-                self.s.add(z3.Or(tuple(obs_constraints)))
+                final_obs_constraint = "(or %s)" %(' '.join(obs_constraints))
+                self.ctx.assert_formulas([yices.Terms.parse_term(final_obs_constraint)])
 
     def get_xref(self, init_poly):
         #TODO: Update partition stuff here
         for num_segs in range(1, self.seg_max+1):
-            self.x_ref_terms = [[z3.Real('xref_%s[%s]'%(j+1,i)) for j in range(self.dims)] for i in range(num_segs+1)]
-            self.s = z3.Solver()
-            
+            cfg = yices.Config()
+            cfg.default_config_for_logic('QF_LRA')
+            self.ctx = yices.Context(cfg)
+            real_t = yices.Types.real_type()
+
+            x_ref_terms = [[yices.Terms.new_uninterpreted_term(real_t, "xref_%s[%s]" %(j+1, i)) for j in range(self.dims)] for i in range(num_segs+1)]
             self.add_initial_constraints(init_poly)
             self.add_goal_constraints(num_segs)
             self.add_unsafe_constraints(num_segs)
+            
+            status = self.ctx.check_context()
 
             x_ref = None
-            if self.s.check() == z3.sat:
-                x_ref = []
+            if status == yices.Status.SAT:
                 if self.print_statements:
                     print('SAT for %s segments' %(num_segs))
-                m = self.s.model()
-                for x_val_term in self.x_ref_terms:
-                    x_val = [m[x_val_term[i]] for i in range(self.dims)]
-                    x_ref.append([float(x_val[i].as_fraction()) for i in range(self.dims)])
-
+                model = yices.Model.from_context(self.ctx, 1)
+                x_ref = [[float(model.get_value(x_ref_terms[i][j])) for j in range(self.dims)] for i in range(num_segs+1)]
                 return x_ref
             else:
                 if self.print_statements:
-                    print('UNSAT for %s segments' %(num_segs))
+                    print('UNSAT for %s segments'%(num_segs))
                 pass
 
         return x_ref
@@ -121,7 +166,6 @@ class FACTEST_Z3():
         return self.final_parts
 
 if __name__=="__main__":
-    #TODO: Make sure that this section is clean and works with current FACTEST setup
     import matplotlib.pyplot as plt
     from factest.plotting.plot_polytopes import plotPoly
     print('testing!')
@@ -139,8 +183,8 @@ if __name__=="__main__":
     initial_poly = pc.Polytope(A, b_init)
     goal_poly = pc.Polytope(A, b_goal)
     unsafe_polys = [pc.Polytope(A, b_unsafe1), pc.Polytope(A, b_unsafe2), pc.Polytope(A, b_unsafe3)]
-
-    FACTEST_prob = FACTEST_Z3(initial_poly, goal_poly, unsafe_polys)
+    
+    FACTEST_prob = FACTEST_yices(initial_poly, goal_poly, unsafe_polys)
     result_dict = FACTEST_prob.run()
     result_keys = list(result_dict.keys())
     xref = result_dict[result_keys[0]]['xref']
