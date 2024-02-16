@@ -7,6 +7,8 @@ import numpy as np
 import polytope as pc
 import yices
 
+# TODO: Want to use workspaces instead of border polytopes. Need to update to use workspaces
+
 class FACTEST_yices:
     def __init__(self, initial_poly, goal_poly, unsafe_polys, seg_max = 3, part_max = 2, print_statements = True):
         self.initial_parts = {0:{'poly':initial_poly,'depth':0, 'xref':None}}
