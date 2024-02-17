@@ -14,6 +14,11 @@
 python3.9 factest/synthesis/factest_base.py
 ```
 
+# Testing examples from CAV20
+```
+python3.9 demo/demo_cav20.py [model] [env] [--solver] [--segs] [--parts] [--print] [--plot]
+```
+
 # Environments which still need to be converted:
 - demo.py
 - easy.py

@@ -74,10 +74,12 @@ class FACTEST_Z3():
         for j in range(self.dims):
             self.s.add(self.x_ref_terms[0][j] == init_center[j])
 
-    def add_goal_constraints(self, num_segs):
+    def add_goal_constraints(self, num_segs, err_bounds):
         A_goal = self.goal_poly.A
         b_goal = self.goal_poly.b
 
+        err = err_bounds[-1]
+        
         for row in range(len(A_goal)):
             A_row = A_goal[row]
             b_val = b_goal[row] #TODO: Need to deal with the bloating
@@ -88,8 +90,10 @@ class FACTEST_Z3():
             
             self.s.add(row_sum <= b_val)
 
-    def add_unsafe_constraints(self, num_segs):
+    def add_unsafe_constraints(self, num_segs, err_bounds):
         for seg in range(num_segs):
+            err = err_bounds[seg]
+    
             for obstacle in self.unsafe_polys:
                 A_obs = obstacle.A
                 b_obs = obstacle.b
@@ -97,7 +101,7 @@ class FACTEST_Z3():
                 obs_constraints = []
                 for row in range(len(A_obs)):
                     A_row = A_obs[row]
-                    b_val = b_obs[row] #TODO: Need to deal with the bloating
+                    b_val = b_obs[row] + np.linalg.norm(A_row)*err #TODO: Need to deal with the bloating
 
                     row_sum_0 = 0
                     row_sum_1 = 0
@@ -130,10 +134,13 @@ class FACTEST_Z3():
             self.x_ref_terms = [[z3.Real('xref_%s[%s]'%(j+1,i)) for j in range(self.dims)] for i in range(num_segs+1)]
             self.s = z3.Solver()
 
-            err_bounds = [self.model.errBound(init_poly, i) for i in range(num_segs)]
+            if type(self.model) != None:
+                err_bounds = [self.model.errBound(init_poly, i) for i in range(num_segs)]
+            else:
+                err_bounds = [0 for i in range(num_segs)]
             
             self.add_initial_constraints(init_poly)
-            self.add_goal_constraints(num_segs)
+            self.add_goal_constraints(num_segs, err_bounds)
             self.add_unsafe_constraints(num_segs, err_bounds)
             self.add_workspace_constraints(num_segs)
 
@@ -159,6 +166,7 @@ class FACTEST_Z3():
         if not force_partition:
             init_poly = self.initial_parts[0]['poly']
             depth = self.initial_parts[0]['depth']
+            
             xref = self.get_xref(init_poly)
 
             self.initial_parts[0] = {'poly':init_poly, 'depth':depth, 'xref':xref}

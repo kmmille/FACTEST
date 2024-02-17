@@ -58,7 +58,7 @@ O18 = pc.Polytope(A, b18)
 
 O = [O1,O2,O3,O4,O5,O6,O7,O8,O9,O10,O11,O12,O13,O14,O15,O16,O17,O18] # Border sets: O19,O20,O21,O22]
 
-b_init = np.array([-(0.5-0.2/sqrt(2)),0.5 + 0.2/sqrt(2),-(3.5 - 0.2/sqrt(2)), 3.5 + 0.2/sqrt(2)])
+b_init = np.array([-0.4,0.6,-3.4,3.6])
 Theta = pc.Polytope(A, b_init)
 
 b_goal = np.array([-6.25, 6.75, -4.5, 5.0])

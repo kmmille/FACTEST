@@ -27,9 +27,6 @@ if args.env == 'maze_2d':
 elif args.env == 'scots_hscc16':
     from demo.envs.scots_hscc16 import Theta, G, O, workspace
 
-err_bounds = [model.errBound(Theta, i) for i in range(args.segs)]
-print(err_bounds)
-
 if args.solver == 'yices':
     from factest.synthesis.factest_base_yices import FACTEST_yices
 
@@ -40,7 +37,7 @@ if args.solver == 'yices':
 else:
     from factest.synthesis.factest_base import FACTEST_Z3 #TODO: Need to update as MILP solver becomes available
 
-    FACTEST_prob = FACTEST_Z3(Theta, G, O, workspace, seg_max = args.segs, part_max = args.parts, print_statements = args.print)
+    FACTEST_prob = FACTEST_Z3(Theta, G, O, workspace = workspace, model = model, seg_max = args.segs, part_max = args.parts, print_statements = args.print)
     result_dict = FACTEST_prob.run()
     result_keys = list(result_dict.keys())
     xref = result_dict[result_keys[0]]['xref']

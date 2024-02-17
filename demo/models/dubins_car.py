@@ -9,9 +9,9 @@ class dubins_car:
         #############################
         # Tracking controller gains #
         #############################
-        self.k1 = 100
-        self.k2 = 100
-        self.k3 = 100
+        self.k1 = 1000
+        self.k2 = 1000
+        self.k3 = 1000
 
         #######################################################
         # Reference state-input trajectories (For simulation) #
