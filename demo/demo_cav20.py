@@ -5,6 +5,7 @@ sys.path.append(modelPath)
 
 import argparse
 
+#TODO: Update choices as new environments and models created
 parser = argparse.ArgumentParser()
 parser.add_argument("model", choices=['car']) #TODO: add options as more are created
 parser.add_argument("env", choices=['maze_2d', 'scots_hscc16']) #TODO: add options as more are created
@@ -18,15 +19,18 @@ args = parser.parse_args()
 print('Running FACTEST for '+str(args.model)+' in '+str(args.env)+' with '+str(args.segs)+' segments and solver '+str(args.solver))
 print('Plotting: '+str(args.plot))
 
+#TODO: Load in different models based on what the user specified
 if args.model == 'car':
     from demo.models.dubins_car import dubins_car
     model = dubins_car()
 
+#TODO: Load in different environments based on what the user specified
 if args.env == 'maze_2d':
     from demo.envs.maze_2d import Theta, G, O, workspace
 elif args.env == 'scots_hscc16':
     from demo.envs.scots_hscc16 import Theta, G, O, workspace
 
+#NOTE: Do not change the rest of this script
 if args.solver == 'yices':
     from factest.synthesis.factest_base_yices import FACTEST_yices
 
