@@ -40,7 +40,7 @@ if args.solver == 'yices':
     result_keys = list(result_dict.keys())
     xref = result_dict[result_keys[0]]['xref']
 else:
-    from factest.synthesis.factest_base import FACTEST_Z3 #TODO: Need to update as MILP solver becomes available
+    from factest.synthesis.factest_base_z3 import FACTEST_Z3 #TODO: Need to update as MILP solver becomes available
 
     FACTEST_prob = FACTEST_Z3(Theta, G, O, workspace = workspace, model = model, seg_max = args.segs, part_max = args.parts, print_statements = args.print)
     result_dict = FACTEST_prob.run()
