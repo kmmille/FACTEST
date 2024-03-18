@@ -2,6 +2,9 @@ import sys, os
 currFile = os.path.abspath(__file__)
 modelPath = currFile.replace('/demo/demo_cav20.py', '')
 sys.path.append(modelPath)
+factestPath = currFile.replace('/demo/test_file.py', '/factest/synthesis')
+sys.path.append(factestPath)
+
 
 import argparse
 import numpy as np

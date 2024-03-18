@@ -3,7 +3,6 @@ from scipy.integrate import odeint
 from scipy.linalg import solve_continuous_are, inv, solve_discrete_are
 from math import sin, cos, tan, atan, pi, sqrt, ceil
 
-
 class dubins_car:
     def __init__(self) -> None:
         #############################
@@ -118,39 +117,25 @@ class dubins_car:
         state_trace = odeint(self.dubinsControlledDynamics, initial_state, time_array)
         return state_trace
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def simulate(self, mode, initial_state, time_horizon, time_step):
-        time_array = np.arange(0, time_horizon+time_step, time_step)
-        if self.state_ref == None and self.input_ref == None:
-            # No controller used here!
-            input = [0, 0]
-        elif (self.state_ref == None and self.input_ref != None) or (self.state_ref != None and self.input_ref == None):
-            # Either the state or reference trajectory is not defined
-            raise Exception('Both state and input trajectories must be defined!')
-        else:
-            # This is where both state and reference trajectories are defined
-            input = self.trackingControl(initial_state, self.state_ref, self.input_ref)
-
-        state_trace = odeint(self.dubinsDynamics, initial_state, time_array, args=(input,))
-
-        trace = []
-
-        for i in range(len(time_array)):
-            trace.append([time_array[i]]+list(state_trace[i]))
-
-        return trace
+    #################################################################################################
+    # Following code is in case we want to run reachability analysis on the synthesized controllers #
+    #################################################################################################
+    # def simulate(self, mode, initial_state, time_horizon, time_step):
+    #     time_array = np.arange(0, time_horizon+time_step, time_step)
+    #     if self.state_ref == None and self.input_ref == None:
+    #         # No controller used here!
+    #         input = [0, 0]
+    #     elif (self.state_ref == None and self.input_ref != None) or (self.state_ref != None and self.input_ref == None):
+    #         # Either the state or reference trajectory is not defined
+    #         raise Exception('Both state and input trajectories must be defined!')
+    #     else:
+    #         # This is where both state and reference trajectories are defined
+    #         input = self.trackingControl(initial_state, self.state_ref, self.input_ref)
+    #     state_trace = odeint(self.dubinsDynamics, initial_state, time_array, args=(input,))
+    #     trace = []
+    #     for i in range(len(time_array)):
+    #         trace.append([time_array[i]]+list(state_trace[i]))
+    #     return trace
 
     # def TC_simulate(self, mode, initialSet, time_horizon, time_step, map=None):
     #     #TODO: Implement TC simulate for reachability
