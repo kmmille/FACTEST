@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.integrate import odeint
 from scipy.linalg import solve_continuous_are, inv, solve_discrete_are
-from math import sin, cos, tan, atan, pi, sqrt
+from math import sin, cos, tan, atan, pi, sqrt, ceil
 
 
 class dubins_car:
@@ -29,9 +29,29 @@ class dubins_car:
         # # self.initial_mode = initial_mode
         # self.curr_state = initial_state # For simulation
 
+        self.dt = 0.1
+
     def dubinsDynamics(self, state, t, input):
         x,y,theta = state
         v, w = input
+
+        xdot = v*cos(theta)
+        ydot = v*sin(theta)
+        thetadot = w
+        
+        return [xdot, ydot, thetadot]
+
+    def dubinsControlledDynamics(self, state, t):
+        ref_idx = ceil(t/self.dt)
+        if ref_idx >= len(self.ref_traj):
+            ref_idx = len(self.ref_traj)-1
+
+        ref_state = self.ref_traj[ref_idx]
+        ref_input = self.ref_input[ref_idx]
+        v,w = self.trackingControl(state, ref_state, ref_input)
+        
+        x,y,theta = state
+        # v, w = input
 
         xdot = v*cos(theta)
         ydot = v*sin(theta)
@@ -60,6 +80,56 @@ class dubins_car:
         err = sqrt(err_0**2 + (4*i)/(self.k2))
         # err = 0.1
         return err
+
+    def set_ref(self, xref, vref):
+        self.ref_traj = []
+        self.ref_input = []
+
+        curr_time = 0
+        prev_t = 0
+        for i in range(len(xref)-1):
+            p1 = xref[i]
+            p2 = xref[i+1]
+
+            mx = p2[0] - p1[0]
+            bx = p1[0]
+            
+            my = p2[1] - p1[1]
+            by = p1[1]
+            
+            theta_ref = np.arctan2((np.array(p2) - np.array(p1))[1], (np.array(p2) - np.array(p1))[0])
+
+            t = np.linalg.norm(np.array(p2)-np.array(p1))/vref
+
+            while curr_time <= t + prev_t:
+                px = mx*((curr_time - prev_t)/t) + bx
+                py = my*((curr_time - prev_t)/t) + by
+                self.ref_traj.append((px,py,theta_ref))
+                self.ref_input.append((vref,0))
+                curr_time += self.dt
+
+            prev_t += t
+
+        return None
+
+    def run_simulation(self, xref, vref, initial_state, T):
+        time_array = np.arange(0,T,self.dt)
+        self.set_ref(xref, vref)
+        state_trace = odeint(self.dubinsControlledDynamics, initial_state, time_array)
+        return state_trace
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def simulate(self, mode, initial_state, time_horizon, time_step):
         time_array = np.arange(0, time_horizon+time_step, time_step)

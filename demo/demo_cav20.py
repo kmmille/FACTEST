@@ -4,6 +4,7 @@ modelPath = currFile.replace('/demo/demo_cav20.py', '')
 sys.path.append(modelPath)
 
 import argparse
+import numpy as np
 
 #TODO: Update choices as new environments and models created
 parser = argparse.ArgumentParser()
@@ -53,12 +54,24 @@ if args.plot:
     xref_1 = [xval[0] for xval in xref]
     xref_2 = [xval[1] for xval in xref]
 
+    # model.run_simulation(xref, 1) #TODO: NEED TO CHANGE THIS TO A UREF
+
+    # time_array = np.arange(0,10,0.1)
+    T = 15
+    states = model.run_simulation(xref, 1, [xref_1[0],xref_2[0],0], T)
+
+    # model.set_ref(xref, 1)
+
+    x_sim = [state[0] for state in states]
+    y_sim = [state[1] for state in states]
+
     fig, ax = plt.subplots()
     plotPoly(workspace,ax,'yellow')
     plotPoly(Theta,ax,'blue')
     plotPoly(G,ax,'green')
     plotPoly(O,ax,'red')
     ax.plot(xref_1, xref_2, marker = 'o')
+    ax.plot(x_sim, y_sim, linestyle = '--')
     ax.set_xlim(-10,10)
     ax.set_ylim(-10,10)
     plt.show()
