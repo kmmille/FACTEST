@@ -2,7 +2,7 @@ import sys, os
 currFile = os.path.abspath(__file__)
 modelPath = currFile.replace('/demo/demo_cav20.py', '')
 sys.path.append(modelPath)
-factestPath = currFile.replace('/demo/test_file.py', '/factest/synthesis')
+factestPath = currFile.replace('/demo/demo_cav20.py', '/factest/synthesis')
 sys.path.append(factestPath)
 
 
@@ -61,7 +61,8 @@ if args.plot:
 
     # time_array = np.arange(0,10,0.1)
     T = 15
-    states = model.run_simulation(xref, 1, [xref_1[0],xref_2[0],0], T)
+    # states = model.run_simulation(xref, 1, T, [xref_1[0],xref_2[0],0])
+    states = model.run_simulation(xref,[xref_1[0],xref_2[0],0],T)
 
     # model.set_ref(xref, 1)
 

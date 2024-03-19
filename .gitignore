@@ -15,3 +15,4 @@
 *.thm
 
 factest-env/
+factest/completeness

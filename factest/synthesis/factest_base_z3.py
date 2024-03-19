@@ -37,7 +37,7 @@ class FACTEST_Z3():
         
         for row in range(len(A_goal)):
             A_row = A_goal[row]
-            b_val = b_goal[row] #TODO: Need to deal with the bloating
+            b_val = b_goal[row] - np.linalg.norm(A_row)*err #TODO: Need to deal with the bloating
 
             row_sum = 0
             for j in range(self.dims):
@@ -89,7 +89,7 @@ class FACTEST_Z3():
             self.x_ref_terms = [[z3.Real('xref_%s[%s]'%(j+1,i)) for j in range(self.dims)] for i in range(num_segs+1)]
             self.s = z3.Solver()
 
-            if type(self.model) != None:
+            if self.model != None:
                 err_bounds = [self.model.errBound(init_poly, i) for i in range(num_segs)]
             else:
                 err_bounds = [0 for i in range(num_segs)]

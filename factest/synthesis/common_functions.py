@@ -1,7 +1,7 @@
 import numpy as np
 import polytope as pc
 
-def partition_polytope(self,poly,dims):
+def partition_polytope(poly,dims):
         print('partitioning!')
         new_polys = []
         if dims != 2 and dims != 3:
@@ -10,7 +10,7 @@ def partition_polytope(self,poly,dims):
             center = poly.chebXc
             x_center = np.array([center[0]])
             y_center = np.array([center[1]])
-            if self.dims == 2:
+            if dims == 2:
                 x_less_than = np.array([1,0])
                 x_greater_than = np.array([-1,0])
                 y_less_than = np.array([0,1])
