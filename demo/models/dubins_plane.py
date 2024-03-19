@@ -3,6 +3,9 @@ from scipy.integrate import odeint
 from scipy.linalg import solve_continuous_are, inv, solve_discrete_are
 from math import sin, cos, tan, atan, pi, sqrt, ceil
 
+#####################################
+# Kinematic version of dubins plane #
+#####################################
 class dubins_plane: # Based on the AUV tracking control
     def __init__(self) -> None:
         self.gamma = 1
@@ -99,9 +102,13 @@ class dubins_plane: # Based on the AUV tracking control
 
         return [xdot, ydot, zdot, pitchdot, yawdot]
 
-    def run_simulation(self, xref, vref, initial_state, T):
+    def run_simulation(self, xref, initial_state, T, vref = 1, sim_type = "base"): #TODO: MAY WANT TO COME UP WITH A BETTER WAY TO DO THIS
+        if sim_type == "base":
+            self.set_ref(xref, vref)
+        else:
+            self.set_timed_ref(xref)
+
         time_array = np.arange(0,T,self.dt)
-        # self.set_ref(xref, vref)
         state_trace = odeint(self.dubinsControlledDynamics, initial_state, time_array)
         return state_trace
 
@@ -133,6 +140,41 @@ class dubins_plane: # Based on the AUV tracking control
             pitch_ref = np.arctan2((np.array(p2) - np.array(p1))[2], sqrt(((np.array(p2) - np.array(p1))[0])**2 + ((np.array(p2) - np.array(p1))[1])**2))
 
             t = np.linalg.norm(np.array(p2)-np.array(p1))/vref
+
+            while curr_time <= t + prev_t:
+                px = mx*((curr_time - prev_t)/t) + bx
+                py = my*((curr_time - prev_t)/t) + by
+                pz = mz*((curr_time - prev_t)/t) + bz
+                self.ref_traj.append((px,py,pz,pitch_ref,yaw_ref))
+                self.ref_input.append((vref,0,0,0))
+                curr_time += self.dt
+
+            prev_t += t
+    
+    def set_timed_ref(self, xref):
+        self.ref_traj = []
+        self.ref_input = []
+
+        curr_time = 0
+        prev_t = 0
+        for i in range(len(xref)-1):
+            p1 = xref[i]
+            p2 = xref[i+1]
+
+            mx = p2[0] - p1[0]
+            bx = p1[0]
+            
+            my = p2[1] - p1[1]
+            by = p1[1]
+
+            mz = p2[2] - p1[2]
+            bz = p1[2]
+            
+            yaw_ref = np.arctan2((np.array(p2) - np.array(p1))[1], (np.array(p2) - np.array(p1))[0])
+            pitch_ref = np.arctan2((np.array(p2) - np.array(p1))[2], sqrt(((np.array(p2) - np.array(p1))[0])**2 + ((np.array(p2) - np.array(p1))[1])**2))
+
+            t = p2[3] - p1[3]
+            vref = np.linalg.norm(np.array(p2) - np.array(p1))/t
 
             while curr_time <= t + prev_t:
                 px = mx*((curr_time - prev_t)/t) + bx

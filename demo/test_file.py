@@ -15,35 +15,107 @@ sys.path.append(factestPath)
 #############################
 import numpy as np
 import matplotlib.pyplot as plt
+import polytope as pc
 
 ## Import FACTEST files ##
 ##########################
 from factest.synthesis.factest_base_z3 import FACTEST_Z3
+from factest.synthesis.factest_base_gurobi import dynamic_FACTEST_gurobi
 from models.dubins_plane import dubins_plane
+from models.dubins_car import dubins_car
 #TODO: Need to make a 3d testing file
 
-model = dubins_plane()
+## Import plotting stuff ##
+###########################
+from factest.plotting.plot_polytopes import plotPoly
 
 
-state = [0,0,0,0,0]
-ref_state = [1,1,1,0,0]
-ref_input = [1,0,0,0]
+#########################
+# TESTS THAT CAN BE RUN #
+#########################
+to_test = "plane"
+to_test = "dynamic_simulation"
 
-T = 10
+#############################
+# TESTING FOR DUBIN'S PLANE #
+#############################
+if to_test == "plane":
+    print('testing plane')
+    
+    model = dubins_plane()
 
-xref = [[1,1,1,0,0], [10,10,10,0,0]]
-states = model.run_simulation(xref, 1, state, T)
+    state = [0,0,0,0,0]
+    ref_state = [1,1,1,0,0]
+    ref_input = [1,0,0,0]
 
-x_sim = [state[0] for state in states]
-y_sim = [state[1] for state in states]
+    T = 10
 
-xref_1 = [xval[0] for xval in xref]
-xref_2 = [xval[1] for xval in xref]
+    xref = [[1,1,1,0,0], [10,10,10,0,0]]
+    vref = 1
+    states = model.run_simulation(xref, vref, state, T)
 
+    x_sim = [state[0] for state in states]
+    y_sim = [state[1] for state in states]
 
-fig, ax = plt.subplots()
-ax.plot(xref_1, xref_2, marker = 'o')
-ax.plot(x_sim, y_sim, linestyle = '--')
-ax.set_xlim(-10,10)
-ax.set_ylim(-10,10)
-plt.show()
+    xref_1 = [xval[0] for xval in xref]
+    xref_2 = [xval[1] for xval in xref]
+
+    fig, ax = plt.subplots()
+    ax.plot(xref_1, xref_2, marker = 'o')
+    ax.plot(x_sim, y_sim, linestyle = '--')
+    ax.set_xlim(-10,10)
+    ax.set_ylim(-10,10)
+    plt.show()
+
+##########################################################
+# SOME TESTING STUFF FOR RUNNING TIMED/DYNAMIC SCENARIOS #
+##########################################################
+elif to_test == "dynamic_simulation":
+    print('testing dynamic simulation')
+
+    model = dubins_car()
+
+    A = np.array([[-1, 0],
+                    [ 1, 0],
+                    [ 0,-1],
+                    [0, 1]])
+    b_init = np.array([[ -0.5], [ 0.75], [ -0.5], [ 0.75]])
+    b_goal = np.array([[-4], [ 5], [-4], [ 5]])
+    b_unsafe1 = np.array([[-3], [3.5], [   0], [5]])
+    b_unsafe2 = np.array([[-3], [  7], [-5.5], [6]])
+    b_unsafe3 = np.array([[-3], [  7], [   1], [0]])
+    b_workspace = np.array([0,7,1,7])
+
+    initial_poly = pc.Polytope(A, b_init)
+    goal_poly = pc.Polytope(A, b_goal)
+    unsafe_polys = [pc.Polytope(A, b_unsafe1), pc.Polytope(A, b_unsafe2), pc.Polytope(A, b_unsafe3)]
+    workspace_poly = pc.Polytope(A, b_workspace)
+
+    FACTEST_prob = dynamic_FACTEST_gurobi(initial_poly, goal_poly, unsafe_polys, workspace=workspace_poly, model=model)
+    result_dict = FACTEST_prob.run()
+    result_keys = list(result_dict.keys())
+    xref = result_dict[result_keys[0]]['xref']
+
+    model.set_timed_ref(xref)
+
+    initial_state = [0.5,0.5,0]
+    T = xref[-1][-1]
+
+    states = model.run_simulation(xref, initial_state, T, vref = 1, sim_type = "timed")
+
+    x_sim = [state[0] for state in states]
+    y_sim = [state[1] for state in states]
+
+    xref_1 = [xval[0] for xval in xref]
+    xref_2 = [xval[1] for xval in xref]
+
+    fig, ax = plt.subplots()
+    plotPoly(workspace_poly,ax,'yellow')
+    plotPoly(initial_poly,ax,'blue')
+    plotPoly(goal_poly,ax,'green')
+    plotPoly(unsafe_polys,ax,'red')
+    ax.plot(xref_1, xref_2, marker = 'o')
+    ax.plot(x_sim, y_sim, linestyle = '--')
+    ax.set_xlim(-10,10)
+    ax.set_ylim(-10,10)
+    plt.show()

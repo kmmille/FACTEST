@@ -111,9 +111,45 @@ class dubins_car:
 
         return None
 
-    def run_simulation(self, xref, vref, initial_state, T):
+    def set_timed_ref(self, xref):
+        self.ref_traj = []
+        self.ref_input = []
+
+        curr_time = 0
+        prev_t = 0
+        for i in range(len(xref)-1):
+            p1 = xref[i]
+            p2 = xref[i+1]
+
+            mx = p2[0] - p1[0]
+            bx = p1[0]
+            
+            my = p2[1] - p1[1]
+            by = p1[1]
+            
+            theta_ref = np.arctan2((np.array(p2) - np.array(p1))[1], (np.array(p2) - np.array(p1))[0])
+
+            t = p2[2] - p1[2]
+            vref = np.linalg.norm(np.array(p2) - np.array(p1))/t
+
+            while curr_time <= t + prev_t:
+                px = mx*((curr_time - prev_t)/t) + bx
+                py = my*((curr_time - prev_t)/t) + by
+                self.ref_traj.append((px,py,theta_ref))
+                self.ref_input.append((vref,0))
+                curr_time += self.dt
+
+            prev_t += t
+            
+        return None
+
+    def run_simulation(self, xref, initial_state, T, vref = 1, sim_type = "base"): #TODO: MAY WANT TO COME UP WITH A BETTER WAY TO DO THIS
+        if sim_type == "base":
+            self.set_ref(xref, vref)
+        else:
+            self.set_timed_ref(xref)
+
         time_array = np.arange(0,T,self.dt)
-        self.set_ref(xref, vref)
         state_trace = odeint(self.dubinsControlledDynamics, initial_state, time_array)
         return state_trace
 

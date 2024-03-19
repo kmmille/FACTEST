@@ -58,7 +58,6 @@ class FACTEST_gurobi():
                 alpha = self.s.addVars(edges, vtype = gp.GRB.BINARY)
                 M = 1e3
 
-                obs_constraints = []
                 for row in range(len(A_obs)):
                     A_row = A_obs[row]
                     b_val = b_obs[row] + np.linalg.norm(A_row)*err
@@ -97,7 +96,6 @@ class FACTEST_gurobi():
             self.xlist = []
             self.s = gp.Model("xref")
             self.s.setParam(gp.GRB.Param.OutputFlag, 0)
-            print('testing')
             
             # Setting the objective and creating xref variables #
             #####################################################
@@ -114,8 +112,6 @@ class FACTEST_gurobi():
 
                     obj += tem_obj
 
-            print('num wps: ', len(self.xlist))
-
             self.s.setObjective(obj, gp.GRB.MINIMIZE)
             self.s.setParam(gp.GRB.Param.OutputFlag, 0)
             
@@ -124,7 +120,6 @@ class FACTEST_gurobi():
             else:
                 err_bounds = [0 for i in range(num_segs+1)]
 
-            #TODO: ADD IN CONSTRAINTS
             self.add_workspace_constraints(num_segs, err_bounds)
             self.add_initial_constraints(init_poly)
             self.add_goal_constraints(num_segs, err_bounds)
@@ -148,7 +143,6 @@ class FACTEST_gurobi():
 
                         wps_list.append([x_pt, y_pt, z_pt])
                 self.s.dispose()
-                # print(wps_list)
                 return wps_list
             
             except:
@@ -190,6 +184,116 @@ class FACTEST_gurobi():
 
         return self.final_parts
 
+#####################################
+# Timed version for dynamic FACTEST #
+#####################################
+class dynamic_FACTEST_gurobi(FACTEST_gurobi):
+    def __init__(self, initial_poly, goal_poly, unsafe_polys, timed_unsafe_polys = [], dt = 1, max_length = 5, model=None, workspace=None, seg_max=6, part_max=2, print_statements=True):
+        super().__init__(initial_poly, goal_poly, unsafe_polys, model, workspace, seg_max, part_max, print_statements)
+
+        self.dt = dt
+        self.max_length = max_length
+        self.timed_unsafe_polys = timed_unsafe_polys
+
+    def add_timing_constraints(self, num_segs):
+        self.s.addConstr(self.xlist[0][self.dims] == 0)
+        for i in range(1,num_segs+1):
+            self.s.addConstr(self.xlist[i][self.dims] == self.xlist[i-1][self.dims] + self.dt)
+
+    def add_length_constraints(self, num_segs):
+        for i in range(1, num_segs+1):
+            self.s.addConstr((self.xlist[i][0] - self.xlist[i-1][0])**2 + (self.xlist[i][1] - self.xlist[i-1][1])**2 <= self.max_length**2)
+
+    def add_timed_unsafe_constraints(self, num_segs, err_bounds):
+        for seg in range(num_segs):
+            err = err_bounds[seg]
+    
+            for obstacle in self.timed_unsafe_polys:
+                A_obs = obstacle.A
+                b_obs = obstacle.b
+
+                edges = len(b_obs)
+                alpha = self.s.addVars(edges, vtype = gp.GRB.BINARY)
+                M = 1e3
+
+                for row in range(len(A_obs)):
+                    A_row = A_obs[row]
+                    b_val = b_obs[row] + np.linalg.norm(A_row)*err
+
+                    row_sum_0 = 0
+                    row_sum_1 = 0
+                    for j in range(self.dims+1):
+                        row_sum_0 += self.xlist[seg][j]*A_row[j]
+                        row_sum_1 += self.xlist[seg+1][j]*A_row[j]
+
+                    self.s.addConstr(b_val - row_sum_0 <= M*(1 - alpha[row]))
+                    self.s.addConstr(b_val - row_sum_1 <= M*(1 - alpha[row]))
+
+                self.s.addConstr(alpha.sum() >= 1)
+
+    def get_xref(self, init_poly):
+        for num_segs in range(1, self.seg_max+1):
+
+            self.xlist = []
+            self.s = gp.Model("xref")
+            self.s.setParam(gp.GRB.Param.OutputFlag, 0)
+            
+            # Setting the objective and creating xref variables #
+            #####################################################
+            obj = 0
+            for i in range(num_segs+1):
+                xnew = self.s.addVars(self.dims+1)
+                self.xlist.append(xnew) 
+
+                if i > 0:
+                    if self.dims == 2:
+                        tem_obj = (self.xlist[i][0] - self.xlist[i-1][0])*(self.xlist[i][0] - self.xlist[i-1][0]) + (self.xlist[i][1] - self.xlist[i-1][1])*(self.xlist[i][1] - self.xlist[i-1][1])
+                    elif self.dims == 3:
+                        tem_obj = (self.xlist[i][0] - self.xlist[i-1][0])*(self.xlist[i][0] - self.xlist[i-1][0]) + (self.xlist[i][1] - self.xlist[i-1][1])*(self.xlist[i][1] - self.xlist[i-1][1]) + (self.xlist[i][2] - self.xlist[i-1][2])*(self.xlist[i][2] - self.xlist[i-1][2])
+
+                    obj += tem_obj
+
+            self.s.setObjective(obj, gp.GRB.MINIMIZE)
+            self.s.setParam(gp.GRB.Param.OutputFlag, 0)
+            
+            if self.model != None:
+                err_bounds = [self.model.errBound(init_poly, i) for i in range(num_segs+1)]
+            else:
+                err_bounds = [0 for i in range(num_segs+1)]
+
+            self.add_workspace_constraints(num_segs, err_bounds)
+            self.add_initial_constraints(init_poly)
+            self.add_goal_constraints(num_segs, err_bounds)
+            self.add_unsafe_constraints(num_segs, err_bounds)
+            self.add_timing_constraints(num_segs)
+            self.add_length_constraints(num_segs)
+            self.add_timed_unsafe_constraints(num_segs, err_bounds)
+
+            self.s.update()
+            self.s.optimize()
+
+            try:
+                wps_list = []
+                for x in self.xlist:
+                    if self.dims == 2:
+                        x_pt = x[0].X
+                        y_pt = x[1].X
+                        t_pt = x[2].X
+                        
+                        wps_list.append([x_pt, y_pt, t_pt])
+                    else:
+                        x_pt = x[0].X
+                        y_pt = x[1].X
+                        z_pt = x[2].X
+                        t_pt = x[3].X
+
+                        wps_list.append([x_pt, y_pt, z_pt, t_pt])
+                self.s.dispose()
+                return wps_list
+            
+            except:
+                self.s.dispose()
+
 if __name__=="__main__":
     #TODO: Make sure that this section is clean and works with current FACTEST setup
     import matplotlib.pyplot as plt
@@ -212,13 +316,17 @@ if __name__=="__main__":
     unsafe_polys = [pc.Polytope(A, b_unsafe1), pc.Polytope(A, b_unsafe2), pc.Polytope(A, b_unsafe3)]
     workspace_poly = pc.Polytope(A, b_workspace)
 
-    FACTEST_prob = FACTEST_gurobi(initial_poly, goal_poly, unsafe_polys, workspace=workspace_poly)
+    # FACTEST_prob = FACTEST_gurobi(initial_poly, goal_poly, unsafe_polys, workspace=workspace_poly)
+    FACTEST_prob = dynamic_FACTEST_gurobi(initial_poly, goal_poly, unsafe_polys, workspace=workspace_poly)
     result_dict = FACTEST_prob.run()
     result_keys = list(result_dict.keys())
     xref = result_dict[result_keys[0]]['xref']
 
     xref_1 = [xval[0] for xval in xref]
     xref_2 = [xval[1] for xval in xref]
+    tref = [xval[2] for xval in xref]
+
+    print(xref_1, xref_2, tref)
 
     fig, ax = plt.subplots()
     plotPoly(workspace_poly,ax,'yellow')
