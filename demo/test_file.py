@@ -21,6 +21,7 @@ import polytope as pc
 ##########################
 from factest.synthesis.factest_base_z3 import FACTEST_Z3
 from factest.synthesis.factest_base_gurobi import dynamic_FACTEST_gurobi
+from factest.synthesis.omega_factest_z3 import hybrid_from_ltl
 from models.dubins_plane import dubins_plane
 from models.dubins_car import dubins_car
 #TODO: Need to make a 3d testing file
@@ -35,6 +36,7 @@ from factest.plotting.plot_polytopes import plotPoly
 #########################
 to_test = "plane"
 to_test = "dynamic_simulation"
+to_test = "omega"
 
 #############################
 # TESTING FOR DUBIN'S PLANE #
@@ -119,3 +121,158 @@ elif to_test == "dynamic_simulation":
     ax.set_xlim(-10,10)
     ax.set_ylim(-10,10)
     plt.show()
+
+#############################
+# Omega tracking simulation #
+#############################
+elif to_test == "omega":
+    print("testing omega tracking")
+
+    model = dubins_car()
+
+    A = np.array([[-1,0],[1,0],[0,-1],[0,1]])
+
+    b_goal1 = np.array([-5,7,-5,7])
+    b_goal2 = np.array([7,-5,7,-5])
+
+    b_unsafe1 = np.array([11,-10,11,11])
+    b_unsafe2 = np.array([-10,11,11,11])
+    b_unsafe3 = np.array([11,11,-10,11])
+    b_unsafe4 = np.array([11,11,11,-10])
+    b_unsafe5 = np.array([11,-2,1,1])
+    b_unsafe6 = np.array([-2,11,1,1])
+
+    b_workspace = np.array([10,10,10,10])
+
+    workspace_poly = pc.Polytope(A, b_workspace)
+
+    E1 = pc.Polytope(A, b_goal1) # goal set 1
+    E2 = pc.Polytope(A, b_goal2) # goal set 2
+    E3 = pc.Polytope(A, b_unsafe5) # unsafe set 1
+    E4 = pc.Polytope(A, b_unsafe6) # unsafe set 2
+
+    env = {'E1':E1,'E2':E2,'E3':E3,'E4':E4}   
+
+    reach_str = 'F E1 & F E2 & G (E1 -> F E2) & G (E2 -> F E1)'
+    avoid_str = 'G !E3 & G !E4'
+    ltl_formula = reach_str + ' & ' + avoid_str
+
+    model = dubins_car()
+    myHybrid = hybrid_from_ltl(ltl_formula=ltl_formula,env=env, model=model, workspace=workspace_poly)
+
+    curr_buchi_state = myHybrid.buchi_inits[0]
+
+    prefix_run = myHybrid.buchi_run['prefix']
+    cycle_run = myHybrid.buchi_run['cycle']
+    num_cycles = 3
+
+    curr_state = [6,6,0]
+
+    all_states = []
+
+    for transition in prefix_run:
+        print('curr buchi state is ', curr_buchi_state)
+        print('prefix transition is ', transition)
+        possible_transitions = myHybrid.buchi_transitions[curr_buchi_state]
+        for potential_transition in possible_transitions:
+            if potential_transition[0] == transition:
+                print('updating buchi state to ', potential_transition[1])
+                curr_buchi_state = potential_transition[1]
+
+    curr_cycle = 1
+    while curr_cycle <= num_cycles:
+        for transition in cycle_run:
+            print('curr buchi state is ', curr_buchi_state)
+            print('cycle ', curr_cycle,' transition is ', transition)
+            possible_transitions = myHybrid.buchi_transitions[curr_buchi_state]
+
+            possible_flows = myHybrid.flows[curr_buchi_state][str(transition)]
+            found_flow = False
+            for potential_flow in possible_flows:
+                init_part = potential_flow['init']
+                if init_part.contains(np.array([[curr_state[0]],[curr_state[1]]]))[0] and not found_flow:
+                    waypoints = potential_flow['xref']
+                    found_flow = True
+
+            print('running simulation from ', curr_state)
+            length = 0
+            for i in range(1,len(waypoints)):
+                length += np.linalg.norm(np.array(waypoints[i] - np.array(waypoints[i-1])))
+            
+            vref = 1
+            T = length/vref
+            
+            if length > 0:
+                states = model.run_simulation(waypoints, curr_state, T, vref=vref)
+                curr_state = states[-1]
+                all_states.extend(states)
+
+            for potential_transition in possible_transitions:
+                if potential_transition[0] == transition:
+                    #TODO: NEED TO USE THE JUMP FUNCTIONS HERE TO RUN A CHECK
+                    print('updating buchi state to ', potential_transition[1])
+                    curr_buchi_state = potential_transition[1]
+        curr_cycle += 1
+
+    fig = plt.figure()
+    
+    ax = fig.add_subplot(111)
+    plotPoly(E1,ax,'green')
+    plotPoly(E2,ax,'green')
+
+    plotPoly(E3,ax,'red')
+    plotPoly(E4,ax,'red')
+
+    xsim = [state[0] for state in all_states]
+    ysim = [state[1] for state in all_states]
+
+    # xref = E2_flows[0]['xref']
+    # xvals = [state[0] for state in xref]
+    # yvals = [state[1] for state in xref]
+
+    ax.plot(xsim,ysim, linestyle = '--')
+
+    ax.set_xlim(-15,15)
+    ax.set_ylim(-15,15)
+    ax.xaxis.set_tick_params(labelbottom=False)
+    ax.yaxis.set_tick_params(labelleft=False)
+
+    plt.show()
+
+    # ax = fig.add_subplot(222)
+    # plotPoly(E1,ax,'green')
+    # plotPoly(E2,ax,'green')
+
+    # plotPoly(E3,ax,'red')
+    # plotPoly(E4,ax,'red')
+
+    # ax.set_xlim(-10,10)
+    # ax.set_ylim(-10,10)
+    # ax.xaxis.set_tick_params(labelbottom=False)
+    # ax.yaxis.set_tick_params(labelleft=False)
+
+    # ax = fig.add_subplot(223)
+    # plotPoly(E1,ax,'green')
+    # plotPoly(E2,ax,'green')
+
+    # plotPoly(E3,ax,'red')
+    # plotPoly(E4,ax,'red')
+
+    # ax.set_xlim(-10,10)
+    # ax.set_ylim(-10,10)
+    # ax.xaxis.set_tick_params(labelbottom=False)
+    # ax.yaxis.set_tick_params(labelleft=False)
+
+    # ax = fig.add_subplot(224)
+    # plotPoly(E1,ax,'green')
+    # plotPoly(E2,ax,'green')
+
+    # plotPoly(E3,ax,'red')
+    # plotPoly(E4,ax,'red')
+
+    # ax.set_xlim(-10,10)
+    # ax.set_ylim(-10,10)
+    # ax.xaxis.set_tick_params(labelbottom=False)
+    # ax.yaxis.set_tick_params(labelleft=False)
+
+    # plt.show()

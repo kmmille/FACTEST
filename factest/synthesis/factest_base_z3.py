@@ -10,7 +10,7 @@ import z3
 from common_functions import partition_polytope
 
 class FACTEST_Z3():
-    def __init__(self, initial_poly, goal_poly, unsafe_polys, model = None, workspace = None, seg_max = 3, part_max = 2, print_statements = True):
+    def __init__(self, initial_poly, goal_poly, unsafe_polys, model = None, workspace = None, seg_max = 3, part_max = 2, print_statements = False):
         self.initial_parts = {0:{'poly':initial_poly,'depth':0, 'xref':None}}
         self.final_parts = {}
         self.goal_poly = goal_poly
@@ -69,7 +69,7 @@ class FACTEST_Z3():
                 self.s.add(z3.Or(tuple(obs_constraints)))
 
     def add_workspace_constraints(self, num_segs):
-        if type(self.workspace) != None:
+        try:
             A_workspace = self.workspace.A
             b_workspace = self.workspace.b
 
@@ -83,6 +83,8 @@ class FACTEST_Z3():
                         row_sum += self.x_ref_terms[i][j]*A_row[j]
 
                     self.s.add(row_sum <= b_val)
+        except:
+            print('no workspace!')
 
     def get_xref(self, init_poly):
         for num_segs in range(1, self.seg_max+1):

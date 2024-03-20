@@ -200,7 +200,7 @@ class buchi_from_ltl:
         buchi_alphabet = self.getBuchiAlphabet(buchi_AP)
 
         aut_run = a.accepting_run()
-
+        
         prefix_run = []
         for i in range(len(aut_run.prefix)):
             letter = str(spot.bdd_format_formula(a.get_dict(), aut_run.prefix[i].label))
