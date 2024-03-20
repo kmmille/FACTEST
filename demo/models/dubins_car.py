@@ -28,7 +28,7 @@ class dubins_car:
         # # self.initial_mode = initial_mode
         # self.curr_state = initial_state # For simulation
 
-        self.dt = 0.1
+        self.dt = 0.01
 
     def dubinsDynamics(self, state, t, input):
         x,y,theta = state
@@ -67,8 +67,8 @@ class dubins_car:
         yerr = (xref - x)*(-sin(theta)) + (yref - y)*cos(theta)
         thetaerr = thetaref - theta
 
-        v = vref*cos(thetaerr) + self.k1*xerr
-        w = wref + vref*(self.k2*yerr + self.k3*sin(thetaerr)) 
+        v = vref*cos(thetaerr) + self.k1/1000*xerr
+        w = wref + vref*(self.k2/1000*yerr + self.k3/1000*sin(thetaerr)) 
 
         input = [v, w]
 
@@ -152,6 +152,85 @@ class dubins_car:
         time_array = np.arange(0,T,self.dt)
         state_trace = odeint(self.dubinsControlledDynamics, initial_state, time_array)
         return state_trace
+
+    def run_omega_simulation(self, hybrid_aut, curr_state, vref = 1, num_cycles = 3):
+        if len(hybrid_aut.buchi_inits) > 1:
+            raise Exception('Runs not implemented for automata with multiple possible initial states!')
+
+
+        curr_buchi_state = hybrid_aut.buchi_inits[0]
+
+        prefix_run = hybrid_aut.buchi_run['prefix']
+        cycle_run = hybrid_aut.buchi_run['cycle']
+
+        all_states = [] #TODO: MAY WANT TO SEPERATE CYCLES
+
+        for transition in prefix_run:
+            print('curr buchi state is ', curr_buchi_state)
+            print('prefix transition is ', transition)
+            possible_transitions = hybrid_aut.buchi_transitions[curr_buchi_state]
+
+            possible_flows = hybrid_aut.flows[curr_buchi_state][str(transition)]
+            found_flow = False
+            for potential_flow in possible_flows:
+                init_part = potential_flow['init']
+                if init_part.contains(np.array([[curr_state[0]],[curr_state[1]]]))[0] and not found_flow:
+                    waypoints = potential_flow['xref']
+                    found_flow = True
+
+            print('running simulation from ', curr_state)
+            length = 0
+            for i in range(1,len(waypoints)):
+                length += np.linalg.norm(np.array(waypoints[i] - np.array(waypoints[i-1])))
+            
+            T = length/vref
+            
+            if length > 0:
+                states = self.run_simulation(waypoints, curr_state, T, vref=vref)
+                curr_state = states[-1]
+                all_states.extend(states)
+
+            for potential_transition in possible_transitions:
+                if potential_transition[0] == transition:
+                    #TODO: NEED TO USE THE JUMP FUNCTIONS HERE TO RUN A CHECK
+                    print('updating buchi state to ', potential_transition[1])
+                    curr_buchi_state = potential_transition[1]
+
+        curr_cycle = 1
+        while curr_cycle <= num_cycles:
+            for transition in cycle_run:
+                print('curr buchi state is ', curr_buchi_state)
+                print('cycle ', curr_cycle,' transition is ', transition)
+                possible_transitions = hybrid_aut.buchi_transitions[curr_buchi_state]
+
+                possible_flows = hybrid_aut.flows[curr_buchi_state][str(transition)]
+                found_flow = False
+                for potential_flow in possible_flows:
+                    init_part = potential_flow['init']
+                    if init_part.contains(np.array([[curr_state[0]],[curr_state[1]]]))[0] and not found_flow:
+                        waypoints = potential_flow['xref']
+                        found_flow = True
+
+                print('running simulation from ', curr_state)
+                length = 0
+                for i in range(1,len(waypoints)):
+                    length += np.linalg.norm(np.array(waypoints[i] - np.array(waypoints[i-1])))
+                
+                T = length/vref
+                
+                if length > 0: #TODO: NEED TO FIGURE OUT WHAT TO DO WHEN THE LENGTH IS 0
+                    states = self.run_simulation(waypoints, curr_state, T, vref=vref)
+                    curr_state = states[-1]
+                    all_states.extend(states)
+
+                for potential_transition in possible_transitions:
+                    if potential_transition[0] == transition:
+                        #TODO: NEED TO USE THE JUMP FUNCTIONS HERE TO RUN A CHECK
+                        print('updating buchi state to ', potential_transition[1])
+                        curr_buchi_state = potential_transition[1]
+            curr_cycle += 1
+        
+        return all_states
 
     #################################################################################################
     # Following code is in case we want to run reachability analysis on the synthesized controllers #

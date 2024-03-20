@@ -160,59 +160,9 @@ elif to_test == "omega":
     model = dubins_car()
     myHybrid = hybrid_from_ltl(ltl_formula=ltl_formula,env=env, model=model, workspace=workspace_poly)
 
-    curr_buchi_state = myHybrid.buchi_inits[0]
-
-    prefix_run = myHybrid.buchi_run['prefix']
-    cycle_run = myHybrid.buchi_run['cycle']
-    num_cycles = 3
-
     curr_state = [6,6,0]
 
-    all_states = []
-
-    for transition in prefix_run:
-        print('curr buchi state is ', curr_buchi_state)
-        print('prefix transition is ', transition)
-        possible_transitions = myHybrid.buchi_transitions[curr_buchi_state]
-        for potential_transition in possible_transitions:
-            if potential_transition[0] == transition:
-                print('updating buchi state to ', potential_transition[1])
-                curr_buchi_state = potential_transition[1]
-
-    curr_cycle = 1
-    while curr_cycle <= num_cycles:
-        for transition in cycle_run:
-            print('curr buchi state is ', curr_buchi_state)
-            print('cycle ', curr_cycle,' transition is ', transition)
-            possible_transitions = myHybrid.buchi_transitions[curr_buchi_state]
-
-            possible_flows = myHybrid.flows[curr_buchi_state][str(transition)]
-            found_flow = False
-            for potential_flow in possible_flows:
-                init_part = potential_flow['init']
-                if init_part.contains(np.array([[curr_state[0]],[curr_state[1]]]))[0] and not found_flow:
-                    waypoints = potential_flow['xref']
-                    found_flow = True
-
-            print('running simulation from ', curr_state)
-            length = 0
-            for i in range(1,len(waypoints)):
-                length += np.linalg.norm(np.array(waypoints[i] - np.array(waypoints[i-1])))
-            
-            vref = 1
-            T = length/vref
-            
-            if length > 0:
-                states = model.run_simulation(waypoints, curr_state, T, vref=vref)
-                curr_state = states[-1]
-                all_states.extend(states)
-
-            for potential_transition in possible_transitions:
-                if potential_transition[0] == transition:
-                    #TODO: NEED TO USE THE JUMP FUNCTIONS HERE TO RUN A CHECK
-                    print('updating buchi state to ', potential_transition[1])
-                    curr_buchi_state = potential_transition[1]
-        curr_cycle += 1
+    all_states = model.run_omega_simulation(myHybrid, curr_state)
 
     fig = plt.figure()
     
