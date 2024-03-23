@@ -142,7 +142,7 @@ elif to_test == "omega":
     b_unsafe5 = np.array([11,-2,1,1])
     b_unsafe6 = np.array([-2,11,1,1])
 
-    b_workspace = np.array([10,10,10,10])
+    b_workspace = np.array([15,15,15,15])
 
     workspace_poly = pc.Polytope(A, b_workspace)
 

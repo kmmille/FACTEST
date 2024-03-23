@@ -181,6 +181,8 @@ if __name__=="__main__":
     result_keys = list(result_dict.keys())
     xref = result_dict[result_keys[0]]['xref']
 
+    print(result_dict)
+
     xref_1 = [xval[0] for xval in xref]
     xref_2 = [xval[1] for xval in xref]
 
