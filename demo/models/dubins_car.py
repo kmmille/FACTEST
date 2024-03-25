@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.integrate import odeint
-from scipy.linalg import solve_continuous_are, inv, solve_discrete_are
 from math import sin, cos, tan, atan, pi, sqrt, ceil
 
 class dubins_car:
@@ -11,6 +10,8 @@ class dubins_car:
         self.k1 = 1000
         self.k2 = 1000
         self.k3 = 1000
+
+        self.length = 5
 
         #######################################################
         # Reference state-input trajectories (For simulation) #
@@ -47,15 +48,17 @@ class dubins_car:
 
         ref_state = self.ref_traj[ref_idx]
         ref_input = self.ref_input[ref_idx]
-        v,w = self.trackingControl(state, ref_state, ref_input)
+        # v,w = self.trackingControl(state, ref_state, ref_input)
+        v,phi = self.trackingControl(state, ref_state, ref_input)
         
         x,y,theta = state
         # v, w = input
 
         xdot = v*cos(theta)
         ydot = v*sin(theta)
-        thetadot = w
-        
+        # thetadot = w
+        thetadot = (v/self.length)*tan(phi)
+
         return [xdot, ydot, thetadot]
 
     def trackingControl(self, curr_state, ref_state, ref_input):
@@ -67,10 +70,15 @@ class dubins_car:
         yerr = (xref - x)*(-sin(theta)) + (yref - y)*cos(theta)
         thetaerr = thetaref - theta
 
-        v = vref*cos(thetaerr) + self.k1/1000*xerr
-        w = wref + vref*(self.k2/1000*yerr + self.k3/1000*sin(thetaerr)) 
+        v = vref*cos(thetaerr) + self.k1/100*xerr
+        w = wref + vref*(self.k2/100*yerr + self.k3/100*sin(thetaerr)) 
 
-        input = [v, w]
+        
+
+        phi = np.clip(atan(w*self.length/v),-pi/2, pi/2)
+
+        # input = [v, w]
+        input = [v,phi]
 
         return input
 
@@ -220,8 +228,18 @@ class dubins_car:
                 
                 if length > 0: #TODO: NEED TO FIGURE OUT WHAT TO DO WHEN THE LENGTH IS 0
                     states = self.run_simulation(waypoints, curr_state, T, vref=vref)
-                    curr_state = states[-1]
-                    all_states.extend(states)
+
+                    keep_running = True
+                    for state in states:
+                        if keep_running:
+                            all_states.append(state)
+                            goal_poly = hybrid_aut.transition_reqs[str(transition)]['goal'][0]
+                            if goal_poly.contains(np.array([[state[0]],[state[1]]]))[0] :
+                                keep_running = False
+
+
+                    curr_state = all_states[-1]
+                    # all_states.extend(states)
 
                 for potential_transition in possible_transitions:
                     if potential_transition[0] == transition:
